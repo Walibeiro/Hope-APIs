@@ -422,10 +422,6 @@ type
     function &end(&index: Integer): Float;
   end;
 
-  JAudioTrackList = class;
-  JVideoTrackList = class;
-  JTextTrackList = class;
-
   JCanPlayTypeResult = String;
   JCanPlayTypeResultHelper = strict helper for JCanPlayTypeResult
     const Maybe = 'maybe';
@@ -448,9 +444,7 @@ type
     const Metadata = 'metadata';
   end;
 
-  JTextTrack = class;
-
-  JHTMLMediaElement = class external 'HTMLMediaElement' (JHTMLElement)
+  JHTMLMediaElement = partial class external 'HTMLMediaElement' (JHTMLElement)
   const
     NETWORK_EMPTY: Integer = 0;
     NETWORK_IDLE: Integer = 1;
@@ -486,18 +480,12 @@ type
     volume: Float;
     muted: Boolean;
     defaultMuted: Boolean;
-    audioTracks: JAudioTrackList; { SameObject }
-    videoTracks: JVideoTrackList; { SameObject }
-    textTracks: JTextTrackList; { SameObject }
     procedure load;
     function canPlayType(&type: String): JCanPlayTypeResult;
     procedure fastSeek(time: Float);
     function getStartDate: Variant;
     procedure play;
     procedure pause;
-    function addTextTrack(kind: JTextTrackKind): JTextTrack; overload;
-    function addTextTrack(kind: JTextTrackKind; label: String): JTextTrack; overload;
-    function addTextTrack(kind: JTextTrackKind; label: String; language: String): JTextTrack; overload;
   end;
 
   JHTMLParamElement = class external 'HTMLParamElement' (JHTMLElement)
@@ -526,7 +514,7 @@ type
     &type: String;
   end;
 
-  JHTMLTrackElement = class external 'HTMLTrackElement' (JHTMLElement)
+  JHTMLTrackElement = partial class external 'HTMLTrackElement' (JHTMLElement)
   const
     NONE: Integer = 0;
     LOADING: Integer = 1;
@@ -539,12 +527,9 @@ type
     label: String;
     default: Boolean;
     readyState: Integer;
-    track: JTextTrack;
   end;
 
-  JTrack = class external (JEventTarget);
-
-  JAudioTrack = class external 'AudioTrack' (JTrack)
+  JAudioTrack = partial class external 'AudioTrack'
   public
     id: String;
     kind: String;
@@ -566,7 +551,7 @@ type
     property Items[Index: Integer]: JAudioTrack read GetItem; default;
   end;
 
-  JVideoTrack = class external 'VideoTrack' (JTrack)
+  JVideoTrack = partial class external 'VideoTrack'
   public
     id: String;
     kind: String;
@@ -589,7 +574,7 @@ type
     property Items[Index: Integer]: JVideoTrack read GetItem; default;
   end;
 
-  JTextTrackList = class external 'TextTrackList' (JEventTarget)
+  JTextTrackList = partial class external 'TextTrackList' (JEventTarget)
   private
     function GetItem(Index: Integer): JVideoTrack; external array;
   public
@@ -597,14 +582,11 @@ type
     onchange: TEventHandler;
     onaddtrack: TEventHandler;
     onremovetrack: TEventHandler;
-    function getTrackById(id: String): JTextTrack;
-
     property Items[Index: Integer]: JVideoTrack read GetItem; default;
   end;
 
-  JTextTrackCue = class external 'TextTrackCue' (JEventTarget)
+  JTextTrackCue = partial class external 'TextTrackCue' (JEventTarget)
   public
-    track: JTextTrack;
     id: String;
     startTime: Float;
     endTime: Float;
@@ -623,7 +605,7 @@ type
     property Item[Index: Integer]: JTextTrackCue read GetItem;
   end;
 
-  JTextTrack = class external 'TextTrack' (JTrack)
+  JTextTrack = partial class external 'TextTrack' (JEventTarget)
   public
     kind: JTextTrackKind;
     label: String;
@@ -638,6 +620,31 @@ type
     procedure removeCue(cue: JTextTrackCue);
   end;
 
+  JTextTrackList = partial class external 'TextTrackList' (JEventTarget)
+  public
+    function getTrackById(id: String): JTextTrack;
+  end;
+
+  JTextTrackCue = partial class external 'TextTrackCue' (JEventTarget)
+  public
+    track: JTextTrack;
+  end;
+
+  JHTMLTrackElement = partial class external 'HTMLTrackElement' (JHTMLElement)
+  public
+    track: JTextTrack;
+  end;
+
+  JHTMLMediaElement = partial class external 'HTMLMediaElement' (JHTMLElement)
+  public
+    audioTracks: JAudioTrackList; { SameObject }
+    videoTracks: JVideoTrackList; { SameObject }
+    textTracks: JTextTrackList; { SameObject }
+    function addTextTrack(kind: JTextTrackKind): JTextTrack; overload;
+    function addTextTrack(kind: JTextTrackKind; label: String): JTextTrack; overload;
+    function addTextTrack(kind: JTextTrackKind; label: String; language: String): JTextTrack; overload;
+  end;
+
   // Constructor( double startTime , double endTime , ArrayBuffer data)
   JDataCue = class external 'DataCue' (JTextTrackCue)
   public
@@ -647,12 +654,18 @@ type
   // Constructor( DOMString type , optional TrackEventInit eventInitDict)
   JTrackEvent = class external 'TrackEvent' (JEvent)
   public
-    track: JTrack;
+    track: Variant;
+    trackAsAudioTrack: JAudioTrack; external 'track';
+    trackAsVideoTrack: JVideoTrack; external 'track';
+    trackAsTextTrack: JTextTrack; external 'track';
   end;
 
   JTrackEventInit = class external 'TrackEventInit' (JEventInit)
   public
-    track: JTrack;
+    track: Variant;
+    trackAsAudioTrack: JAudioTrack; external 'track';
+    trackAsVideoTrack: JVideoTrack; external 'track';
+    trackAsTextTrack: JTextTrack; external 'track';
   end;
 
   JHTMLMapElement = class external 'HTMLMapElement' (JHTMLElement)
@@ -1188,15 +1201,16 @@ type
     procedure clearData(format: String); overload;
   end;
 
-  // Constructor( DOMString type , optional DragEventInit eventInitDict)
-  JDragEvent = class external 'DragEvent' (JMouseEvent)
+  JDragEventInit = class external 'DragEventInit' (JMouseEventInit)
   public
     dataTransfer: JDataTransfer;
   end;
 
-  JDragEventInit = class external 'DragEventInit' (JMouseEventInit)
+  JDragEvent = class external 'DragEvent' (JMouseEvent)
   public
     dataTransfer: JDataTransfer;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JDragEventInit); overload;
   end;
 
   JFrameRequestCallback = procedure(time: TDOMHighResTimeStamp);
@@ -1222,22 +1236,17 @@ type
     procedure replaceState(data: Variant; title: String; url: String); overload;
   end;
 
-  // Constructor( DOMString type , optional PopStateEventInit eventInitDict),Exposed=( Window , Worker)
-  JPopStateEvent = class external 'PopStateEvent' (JEvent)
-  public
-    state: Variant;
-  end;
-
   JPopStateEventInit = class external 'PopStateEventInit' (JEventInit)
   public
     state: Variant;
   end;
 
-  // Constructor( DOMString type , optional HashChangeEventInit eventInitDict),Exposed=( Window , Worker)
-  JHashChangeEvent = class external 'HashChangeEvent' (JEvent)
+  // Exposed = (Window, Worker)
+  JPopStateEvent = class external 'PopStateEvent' (JEvent)
   public
-    oldURL: String;
-    newURL: String;
+    state: Variant;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JPopStateEventInit); overload;
   end;
 
   JHashChangeEventInit = class external 'HashChangeEventInit' (JEventInit)
@@ -1246,15 +1255,26 @@ type
     newURL: String;
   end;
 
-  // Constructor( DOMString type , optional PageTransitionEventInit eventInitDict),Exposed=( Window , Worker)
-  JPageTransitionEvent = class external 'PageTransitionEvent' (JEvent)
+  // Exposed = (Window, Worker)
+  JHashChangeEvent = class external 'HashChangeEvent' (JEvent)
   public
-    persisted: Boolean;
+    oldURL: String;
+    newURL: String;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JHashChangeEventInit); overload;
   end;
 
   JPageTransitionEventInit = class external 'PageTransitionEventInit' (JEventInit)
   public
     persisted: Boolean;
+  end;
+
+  // Exposed = (Window, Worker)
+  JPageTransitionEvent = class external 'PageTransitionEvent' (JEvent)
+  public
+    persisted: Boolean;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JPageTransitionEventInit); overload;
   end;
 
   JBeforeUnloadEvent = class external 'BeforeUnloadEvent' (JEvent)
@@ -1287,17 +1307,19 @@ type
     error: Variant;
   end;
 
-  // Constructor( DOMString type , PromiseRejectionEventInit eventInitDict),Exposed=( Window , Worker)
-  JPromiseRejectionEvent = class external 'PromiseRejectionEvent' (JEvent)
+  JPromiseRejectionEventInit = class external 'PromiseRejectionEventInit' (JEventInit)
   public
     promise: Variant;
     reason: Variant;
   end;
 
-  JPromiseRejectionEventInit = class external 'PromiseRejectionEventInit' (JEventInit)
+  // Exposed = (Window, Worker)
+  JPromiseRejectionEvent = class external 'PromiseRejectionEvent' (JEvent)
   public
     promise: Variant;
     reason: Variant;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JPromiseRejectionEventInit); overload;
   end;
 
   // NoInterfaceObject
@@ -1397,14 +1419,14 @@ type
 
   TImageBitmapSource = Variant; //ToDo
 
-  // Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JImageBitmap = class external 'ImageBitmap'
   public
     width: Integer;
     height: Integer;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JWindowOrWorkerGlobalScope = class external 'WindowOrWorkerGlobalScope'
   public
     origin: String; { Replaceable }
@@ -1432,7 +1454,7 @@ type
   JNavigator = class external 'Navigator'
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject,Exposed = (Window, Worker)
   JNavigatorID = class external 'NavigatorID'
   public
     appCodeName: String; { Exposed=Window }
@@ -1443,7 +1465,7 @@ type
     userAgent: String;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JNavigatorLanguage = class external 'NavigatorLanguage'
   public
     language: String;
@@ -1642,7 +1664,7 @@ type
     property Items[Name: String]: JObject read GetNamedItem; default;
   end;
 
-  // PrimaryGlobal,LegacyUnenumerableNamedProperties
+  // PrimaryGlobal, LegacyUnenumerableNamedProperties
   JWindow = class external 'Window' (JEventTarget)
   private
     function GetIndexedItem(index: Integer): JWindowProxy; external array;

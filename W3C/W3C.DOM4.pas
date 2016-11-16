@@ -14,7 +14,7 @@ type
   end;
 
   // Exposed = (Window, Worker)
-  JEvent = class external 'Event'
+  JEvent = partial class external 'Event'
   const
     NONE: Integer = 0;
     CAPTURING_PHASE: Integer = 1;
@@ -252,7 +252,7 @@ type
   end;
 
   // Exposed = Window
-  JText = class external 'Text' (JCharacterData)
+  JText = partial class external 'Text' (JCharacterData)
   public
     wholeText: String;
     constructor Create; overload;
@@ -272,11 +272,16 @@ type
     target: String;
   end;
 
-  JDOMTokenList = class external 'DOMTokenList'
+  // Exposed = (Window, Worker, System)
+  JDOMStringList = class external 'DOMStringList'
   public
     length: Integer;
     function item(&index: Integer): String;
     function contains(token: String): Boolean;
+  end;
+
+  JDOMTokenList = class external 'DOMTokenList' (JDOMStringList)
+  public
     procedure add(tokens: String);
     procedure remove(tokens: String);
     function toggle(token: String): Boolean; overload;
