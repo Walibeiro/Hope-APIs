@@ -3,17 +3,9 @@ unit W3C.HTML5;
 interface
 
 uses
-  W3C.DOM4;
+  ECMA.TypedArray, W3C.DOM4, W3C.FileAPI, W3C.UIEvents, W3C.HighResolutionTime;
 
 type
-  JEventHandlerNonNull = function(event: JEvent): Variant;
-
-  TEventHandler = JEventHandlerNonNull;
-  JOnErrorEventHandlerNonNull = function(event: JEvent; source: String; lineno: Integer; column: Integer; error: Variant): Variant;
-
-  TOnErrorEventHandler = JOnErrorEventHandlerNonNull;
-  JOnBeforeUnloadEventHandlerNonNull = function(event: JEvent): String;
-
   // OverrideBuiltins
   JDOMStringMap = class external 'DOMStringMap'
   private
@@ -331,7 +323,6 @@ type
     border: String; { TreatNullAs=EmptyString }
   end;
 
-  JWindow = partial class external 'Window' (JEventTarget);
   JWindowProxy = JWindow;
 
   JHTMLIFrameElement = class external 'HTMLIFrameElement' (JHTMLElement)
@@ -650,7 +641,7 @@ type
   // Constructor( double startTime , double endTime , ArrayBuffer data)
   JDataCue = class external 'DataCue' (JTextTrackCue)
   public
-// TODO    data: JArrayBuffer;
+    data: JArrayBuffer;
   end;
 
   // Constructor( DOMString type , optional TrackEventInit eventInitDict)
@@ -1309,7 +1300,6 @@ type
     reason: Variant;
   end;
 
-  TOnBeforeUnloadEventHandler = JOnBeforeUnloadEventHandlerNonNull;
   // NoInterfaceObject
   JGlobalEventHandlers = class external 'GlobalEventHandlers'
   public

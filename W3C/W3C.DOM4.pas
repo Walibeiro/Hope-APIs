@@ -65,6 +65,16 @@ type
 		function dispatchEvent(event: JEvent): Boolean;
 	end;
 
+  JEventHandlerNonNull = function(event: JEvent): Variant;
+
+  TEventHandler = JEventHandlerNonNull;
+  TOnErrorEventHandlerNonNull = function(event: JEvent; source: String;
+    lineno, column: Integer; error: Variant): Variant;
+
+  TOnErrorEventHandler = TOnErrorEventHandlerNonNull;
+  TOnBeforeUnloadEventHandlerNonNull = function(event: JEvent): String;
+  TOnBeforeUnloadEventHandler = TOnBeforeUnloadEventHandlerNonNull;
+
 	JNode = partial class external 'Node' (JEventTarget);
   JElement = partial class external 'Element' (JNode);
 
@@ -407,7 +417,14 @@ type
 		value: String;
 	end;
 
-	// Exposed = Window
+	// Constructor( DOMString name , optional DOMString message = "")
+	JDOMError = class external 'DOMError'
+	public
+		name: String;
+		message: String;
+	end;
+
+  // Exposed = Window
 	JDocument = partial class external 'Document' (JNode)
 	public
 		&implementation: JDOMImplementation; { SameObject }
@@ -439,9 +456,4 @@ type
 		function createTreeWalker(root: JNode; whatToShow: Integer; filter: JNodeFilter): JTreeWalker; overload; { NewObject }
 	end;
 
-	// Constructor( DOMString name , optional DOMString message = "")
-	JDOMError = class external 'DOMError'
-	public
-		name: String;
-		message: String;
-	end;
+  JWindow = partial class external 'Window' (JEventTarget);
