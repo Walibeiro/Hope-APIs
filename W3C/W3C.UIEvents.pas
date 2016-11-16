@@ -34,10 +34,7 @@ type
 
   JEventModifierInit = class external 'EventModifierInit' (JUIEventInit)
   public
-    ctrlKey: Boolean;
-    shiftKey: Boolean;
-    altKey: Boolean;
-    metaKey: Boolean;
+    ctrlKey, shiftKey, altKey, metaKey: Boolean;
     modifierAltGraph: Boolean;
     modifierCapsLock: Boolean;
     modifierFn: Boolean;
@@ -52,10 +49,8 @@ type
 
   JMouseEventInit = class external 'MouseEventInit' (JEventModifierInit)
   public
-    screenX: Integer;
-    screenY: Integer;
-    clientX: Integer;
-    clientY: Integer;
+    screenX, screenY: Integer;
+    clientX, clientY: Integer;
     button: Integer;
     buttons: Integer;
     relatedTarget: JEventTarget;
@@ -63,14 +58,9 @@ type
 
   JMouseEvent = class external 'MouseEvent' (JUIEvent)
   public
-    screenX: Integer;
-    screenY: Integer;
-    clientX: Integer;
-    clientY: Integer;
-    ctrlKey: Boolean;
-    shiftKey: Boolean;
-    altKey: Boolean;
-    metaKey: Boolean;
+    screenX, screenY: Integer;
+    clientX, clientY: Integer;
+    ctrlKey, shiftKey, altKey, metaKey: Boolean;
     button: Integer;
     buttons: Integer;
     relatedTarget: JEventTarget;
@@ -81,9 +71,7 @@ type
 
   JWheelEventInit = class external 'WheelEventInit' (JMouseEventInit)
   public
-    deltaX: Float;
-    deltaY: Float;
-    deltaZ: Float;
+    deltaX, deltaY, deltaZ: Float;
     deltaMode: Integer;
   end;
 
@@ -93,9 +81,7 @@ type
     DOM_DELTA_LINE: Integer = 1;
     DOM_DELTA_PAGE: Integer = 2;
   public
-    deltaX: Float;
-    deltaY: Float;
-    deltaZ: Float;
+    deltaX, deltaY, deltaZ: Float;
     deltaMode: Integer;
     constructor Create(&type: String); overload;
     constructor Create(&type: String; eventInitDict: JWheelEventInit); overload;
@@ -134,10 +120,7 @@ type
     key: String;
     code: String;
     location: Integer;
-    ctrlKey: Boolean;
-    shiftKey: Boolean;
-    altKey: Boolean;
-    metaKey: Boolean;
+    ctrlKey, shiftKey, altKey, metaKey: Boolean;
     &repeat: Boolean;
     isComposing: Boolean;
     charCode: Integer;

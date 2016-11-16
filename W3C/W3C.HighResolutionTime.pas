@@ -9,7 +9,7 @@ type
 	TDOMHighResTimeStamp = Float;
 
 	// Exposed = (Window, Worker)
-	JPerformance = class external 'Performance' (JEventTarget)
+	JPerformance = partial class external 'Performance' (JEventTarget)
 	public
 		function now: TDOMHighResTimeStamp;
 	end;
