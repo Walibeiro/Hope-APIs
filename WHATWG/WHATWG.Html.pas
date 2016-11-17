@@ -172,7 +172,7 @@ type
   end;
 
   // HTMLConstructor
-  JHTMLBodyElement = class external 'HTMLBodyElement' (JHTMLElement)
+  JHTMLBodyElement = partial class external 'HTMLBodyElement' (JHTMLElement)
   public
     text: String; { CEReactions,TreatNullAs=EmptyString }
     link: String; { CEReactions,TreatNullAs=EmptyString }
@@ -1356,15 +1356,45 @@ type
     function isPointInStroke(path: JPath2D; x, y: Float): Boolean; overload;
   end;
 
-  JCanvasLineCap = (clcButt, clcRound, clcSquare);
+  JCanvasLineCap = String;
+  JCanvasLineCapHelper = strict helper for JCanvasLineCap
+    const Butt = 'butt';
+    const Round = 'round';
+    const Square = 'square';
+  end;
 
-  JCanvasLineJoin = (cljRound, cljBevel, cljMiter);
+  JCanvasLineJoin = String;
+  JCanvasLineJoinHelper = strict helper for JCanvasLineJoin
+    const Round = 'round';
+    const Bevel = 'bevel';
+    const Miter = 'miter';
+  end;
 
-  JCanvasTextAlign = (ctaStart, ctaEnd, ctaLeft, ctaRight, ctaCenter);
+  JCanvasTextAlign = String;
+  JCanvasTextAlignHelper = strict helper for JCanvasTextAlign
+    const Start = 'start';
+    const &End = 'end';
+    const Left = 'left';
+    const Right = 'right';
+    const Center = 'center';
+  end;
 
-  JCanvasTextBaseline = (ctbTop, ctbHanging, ctbMiddle, ctbAlphabetic, ctbIdeographic, ctbBottom);
+  JCanvasTextBaseline = String;
+  JCanvasTextBaselineHelper = strict helper for JCanvasTextBaseline
+    const Top = 'top';
+    const Hanging = 'hanging';
+    const Middle = 'middle';
+    const Alphabetic = 'alphabetic';
+    const Ideographic = 'ideographic';
+    const Bottom = 'bottom';
+  end;
 
-  JCanvasDirection = (cdLtr, cdRtl, cdInherit);
+  JCanvasDirection = String;
+  JCanvasDirectionHelper = strict helper for JCanvasDirection
+    const Ltr = 'ltr';
+    const Rtl = 'rtl';
+    const Inherit = 'inherit';
+  end;
 
   // NoInterfaceObject
   JCanvasUserInterface = class external 'CanvasUserInterface'
@@ -1792,10 +1822,33 @@ type
 
   TTimerHandler = Variant;  // TODO
   TImageBitmapSource = Variant;  // TODO
-  JImageOrientation = (ioNone, ioFlipY);
-  JPremultiplyAlpha = (paNone, paPremultiply, paDefault);
-  JColorSpaceConversion = (cscNone, cscDefault);
-  JResizeQuality = (rqPixelated, rqLow, rqMedium, rqHigh);
+
+  JImageOrientation = String;
+  JImageOrientationHelper = strict helper for JImageOrientation
+    const None = 'none';
+    const FlipY = 'flipy';
+  end;
+
+  JPremultiplyAlpha = String;
+  JPremultiplyAlphaHelper = strict helper for JPremultiplyAlpha
+    const None = 'none';
+    const Premultiply = 'premultiply';
+    const Default = 'default';
+  end;
+
+  JColorSpaceConversion = String;
+  JColorSpaceConversionHelper = strict helper for JColorSpaceConversion
+    const None = 'none';
+    const Default = 'default';
+  end;
+
+  JResizeQuality = String;
+  JResizeQualityHelper = strict helper for JResizeQuality
+    const Pixelated = 'pixelated';
+    const Lo = 'low';
+    const Medium = 'medium';
+    const Hi = 'high';
+  end;
 
 
   JImageBitmapOptions = class external 'ImageBitmapOptions'
@@ -1977,7 +2030,11 @@ type
     withCredentials: Boolean;
   end;
 
-  JBinaryType = (btBlob, btArraybuffer);
+  JBinaryType = String;
+  JBinaryTypeHelper = strict helper for JBinaryType
+    const Blob = 'blob';
+    const ArrayBuffer = 'arraybuffer';
+  end;
 
   // Constructor( USVString url , optional( DOMString or sequence < DOMString >)protocols=[]),Exposed=( Window , Worker)
   JWebSocket = class external 'WebSocket' (JEventTarget)

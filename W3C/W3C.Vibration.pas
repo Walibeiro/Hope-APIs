@@ -3,7 +3,7 @@ unit W3C.Vibration;
 interface
 
 type
-  TVibratePattern = Variant;  // TODO
+  TVibratePattern = array of Integer;
 
   JNavigator = partial class external 'Navigator'
   public
