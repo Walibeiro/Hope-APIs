@@ -422,11 +422,12 @@ type
     value: String;
   end;
 
-  // Constructor( DOMString name , optional DOMString message = "")
   JDOMError = class external 'DOMError'
   public
     name: String;
     message: String;
+    constructor Create(name: String); overload;
+    constructor Create(name: String; message: String); overload;
   end;
 
   // Exposed = Window

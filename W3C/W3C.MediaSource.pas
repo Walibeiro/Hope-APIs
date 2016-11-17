@@ -57,7 +57,6 @@ type
     property Items[Index: Integer]: JSourceBuffer read GetItem;
   end;
 
-  // Constructor
   JMediaSource = class external 'MediaSource' (JEventTarget)
   public
     sourceBuffers: JSourceBufferList;
@@ -77,7 +76,7 @@ type
     function isTypeSupported(&type: String): Boolean;
   end;
 
-  // Exposed=Window,DedicatedWorker,SharedWorker
+  // Exposed = Window, DedicatedWorker, SharedWorker
   JURL = partial class external 'URL'
   public
     function createObjectURL(mediaSource: JMediaSource): String;

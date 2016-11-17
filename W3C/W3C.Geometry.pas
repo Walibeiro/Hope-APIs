@@ -68,7 +68,6 @@ type
     bounds: JDOMRectReadOnly; { SameObject }
   end;
 
-  // Constructor( sequence < unrestricted double > numberSequence)
   // Exposed = (Window, Worker)
   JDOMMatrixReadOnly = partial class external 'DOMMatrixReadOnly'
   public
@@ -79,15 +78,17 @@ type
     m41, m42, m43, m44: Float;
     is2D: Boolean;
     isIdentity: Boolean;
+    constructor Create(numberSequence: array of Float);
   end;
 
-  // Constructor,Constructor( DOMString transformList),
-  // Constructor( DOMMatrixReadOnly other),Constructor( Float32Array array32),
-  // Constructor( Float64Array array64),
-  // Constructor( sequence < unrestricted double > numberSequence)
   // Exposed = (Window, Worker)
   JDOMMatrix = class external 'DOMMatrix' (JDOMMatrixReadOnly)
   public
+    constructor Create(transformList: String); overload;
+    constructor Create(other: JDOMMatrixReadOnly); overload;
+    constructor Create(array32: JFloat32Array); overload;
+    constructor Create(array64: JFloat64Array); overload;
+    constructor Create(numberSequence: array of Float); overload;
     function multiplySelf(other: JDOMMatrix): JDOMMatrix;
     function preMultiplySelf(other: JDOMMatrix): JDOMMatrix;
     function translateSelf(tx: Float; ty: Float; tz: Float = 0): JDOMMatrix;
@@ -103,7 +104,6 @@ type
     function setMatrixValue(transformList: String): JDOMMatrix;
   end;
 
-  // Constructor( sequence < unrestricted double > numberSequence)
   // Exposed = (Window, Worker)
   JDOMMatrixReadOnly = partial class external 'DOMMatrixReadOnly'
   public

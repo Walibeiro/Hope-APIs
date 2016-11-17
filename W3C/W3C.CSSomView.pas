@@ -43,17 +43,18 @@ type
     procedure removeListener(listener: JEventListener);
   end;
 
-  // Constructor( DOMString type , optional MediaQueryListEventInit eventInitDict)
-  JMediaQueryListEvent = class external 'MediaQueryListEvent' (JEvent)
+  JMediaQueryListEventInit = class external 'MediaQueryListEventInit' (JEventInit)
   public
     media: String;
     matches: Boolean;
   end;
 
-  JMediaQueryListEventInit = class external 'MediaQueryListEventInit' (JEventInit)
+  JMediaQueryListEvent = class external 'MediaQueryListEvent' (JEvent)
   public
     media: String;
     matches: Boolean;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JMediaQueryListEventInit); overload;
   end;
 
   JDOMRect = variant;

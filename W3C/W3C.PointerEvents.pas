@@ -18,7 +18,6 @@ type
     isPrimary: Boolean;
   end;
 
-  // Constructor( DOMString type , optional PointerEventInit eventInitDict)
   JPointerEvent = class external 'PointerEvent' (JMouseEvent)
   public
     pointerId: Integer;
@@ -29,6 +28,8 @@ type
     tiltY: Integer;
     pointerType: String;
     isPrimary: Boolean;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JPointerEventInit); overload;
   end;
 
   JElement = partial class external 'Element'

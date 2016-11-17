@@ -6,7 +6,11 @@ uses
   W3C.DOM4;
 
 type
-  // Constructor( DOMString url , optional EventSourceInit eventSourceInitDict)
+  JEventSourceInit = class external 'EventSourceInit'
+  public
+    withCredentials: Boolean;
+  end;
+
   JEventSource = class external 'EventSource' (JEventTarget)
   const
     CONNECTING: Integer = 0;
@@ -19,10 +23,6 @@ type
     onopen: TEventHandler;
     onmessage: TEventHandler;
     onerror: TEventHandler;
+    constructor Create(url: String; eventSourceInitDict: JEventSourceInit);
     procedure close;
-  end;
-
-  JEventSourceInit = class external 'EventSourceInit'
-  public
-    withCredentials: Boolean;
   end;

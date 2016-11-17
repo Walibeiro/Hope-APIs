@@ -51,18 +51,21 @@ type
     onerror: TEventHandler;
   end;
 
-  // Constructor( DOMString scriptURL),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JWorker = class external 'Worker' (JEventTarget)
   public
     onmessage: TEventHandler;
+    constructor Create(scriptURL: String);
     procedure terminate;
     procedure postMessage(message: Variant); overload;
     procedure postMessage(message: Variant; transfer: array of JWindowProxy); overload;
     procedure postMessage(message: Variant; transfer: array of JMessagePort); overload;
   end;
 
-  // Constructor( DOMString scriptURL , optional DOMString name),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JSharedWorker = class external 'SharedWorker' (JEventTarget)
   public
     port: JMessagePort;
+    constructor Create(scriptURL: String); overload;
+    constructor Create(scriptURL, Name: String); overload;
   end;

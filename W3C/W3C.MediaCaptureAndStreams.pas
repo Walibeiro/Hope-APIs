@@ -1,0 +1,284 @@
+unit W3C.MediaCaptureAndStreams;
+
+interface
+
+uses
+  W3C.DOM4;
+
+type
+  TConstrainLong = Variant; // TODO
+  TConstrainDouble = Variant; // TODO
+  TConstrainBoolean = Variant; // TODO
+  TConstrainDOMString = Variant; // TODO
+
+  JMediaStreamTrackState = String;
+  JMediaStreamTrackStateHelper = strict helper for JMediaStreamTrackState
+    const Live = 'live';
+    const Ended = 'ended';
+  end;
+
+  JVideoFacingModeEnum = String;
+  JVideoFacingModeEnumHelper = strict helper for JVideoFacingModeEnum
+    const User = 'user';
+    const Environment = 'environment';
+    const Left = 'left';
+    const Right = 'right';
+  end;
+
+  TMediaStreamError = Variant;
+
+  JMediaTrackCapabilities = class external 'MediaTrackCapabilities'
+  public
+    width: Variant; // TODO
+    height: Variant; // TODO
+    aspectRatio: Variant; // TODO
+    frameRate: Variant; // TODO
+    facingMode: array of String;
+    volume: Variant; // TODO
+    sampleRate: Variant; // TODO
+    sampleSize: Variant; // TODO
+    echoCancellation: array of Boolean;
+    latency: Variant; // TODO
+    channelCount: Variant; // TODO
+    deviceId: String;
+    groupId: String;
+  end;
+
+  JMediaTrackConstraintSet = class external 'MediaTrackConstraintSet'
+  public
+    width: TConstrainLong;
+    height: TConstrainLong;
+    aspectRatio: TConstrainDouble;
+    frameRate: TConstrainDouble;
+    facingMode: TConstrainDOMString;
+    volume: TConstrainDouble;
+    sampleRate: TConstrainLong;
+    sampleSize: TConstrainLong;
+    echoCancellation: TConstrainBoolean;
+    latency: TConstrainDouble;
+    channelCount: TConstrainLong;
+    deviceId: TConstrainDOMString;
+    groupId: TConstrainDOMString;
+  end;
+
+  JMediaTrackConstraints = class external 'MediaTrackConstraints' (JMediaTrackConstraintSet)
+  public
+    advanced: array of JMediaTrackConstraintSet;
+  end;
+
+  JMediaTrackSettings = class external 'MediaTrackSettings'
+  public
+    width: Integer;
+    height: Integer;
+    aspectRatio: Float;
+    frameRate: Float;
+    facingMode: String;
+    volume: Float;
+    sampleRate: Integer;
+    sampleSize: Integer;
+    echoCancellation: Boolean;
+    latency: Float;
+    channelCount: Integer;
+    deviceId: String;
+    groupId: String;
+  end;
+
+  // Exposed = Window
+  JMediaStreamTrack = class external 'MediaStreamTrack' (JEventTarget)
+  public
+    kind: String;
+    id: String;
+    label: String;
+    enabled: Boolean;
+    muted: Boolean;
+    onmute: TEventHandler;
+    onunmute: TEventHandler;
+    readyState: JMediaStreamTrackState;
+    onended: TEventHandler;
+    onoverconstrained: TEventHandler;
+    function clone: JMediaStreamTrack;
+    procedure stop;
+    function getCapabilities: JMediaTrackCapabilities;
+    function getConstraints: JMediaTrackConstraints;
+    function getSettings: JMediaTrackSettings;
+    procedure applyConstraints; overload;
+    procedure applyConstraints(constraints: JMediaTrackConstraints); overload;
+  end;
+
+  // Exposed = Window,
+  JMediaStream = class external 'MediaStream' (JEventTarget)
+  public
+    id: String;
+    active: Boolean;
+    onaddtrack: TEventHandler;
+    onremovetrack: TEventHandler;
+    constructor Create; overload;
+    constructor Create(Stream: JMediaStream); overload;
+    constructor Create(tracks: array of JMediaStreamTrack); overload;
+    function getAudioTracks: array of JMediaStreamTrack;
+    function getVideoTracks: array of JMediaStreamTrack;
+    function getTracks: array of JMediaStreamTrack;
+    function getTrackById(trackId: String): JMediaStreamTrack;
+    procedure addTrack(track: JMediaStreamTrack);
+    procedure removeTrack(track: JMediaStreamTrack);
+    function clone: JMediaStream;
+  end;
+
+  JMediaTrackSupportedConstraints = class external 'MediaTrackSupportedConstraints'
+  public
+    width: Boolean;
+    height: Boolean;
+    aspectRatio: Boolean;
+    frameRate: Boolean;
+    facingMode: Boolean;
+    volume: Boolean;
+    sampleRate: Boolean;
+    sampleSize: Boolean;
+    echoCancellation: Boolean;
+    latency: Boolean;
+    channelCount: Boolean;
+    deviceId: Boolean;
+    groupId: Boolean;
+  end;
+
+  JMediaStreamTrackEventInit = class external 'MediaStreamTrackEventInit' (JEventInit)
+  public
+    track: JMediaStreamTrack;
+  end;
+
+  // Exposed = Window
+  JMediaStreamTrackEvent = class external 'MediaStreamTrackEvent' (JEvent)
+  public
+    track: JMediaStreamTrack; { SameObject }
+    constructor Create(&type: String; eventInitDict: JMediaStreamTrackEventInit);
+  end;
+
+  JOverconstrainedErrorEventInit = class external 'OverconstrainedErrorEventInit' (JEventInit)
+  public
+// TODO    error: JOverconstrainedError;
+  end;
+
+  // Exposed = Window
+  JOverconstrainedErrorEvent = class external 'OverconstrainedErrorEvent' (JEvent)
+  public
+// TODO    error: JOverconstrainedError;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JOverconstrainedErrorEventInit); overload;
+  end;
+
+  JMediaDeviceKind = String;
+  JMediaDeviceKindHelper = strict helper for JMediaDeviceKind
+    const AudioInput = 'audioinput';
+    const AudioOutput = 'audiooutput';
+    const VideoInput = 'videoinput';
+  end;
+
+  // Exposed = Window
+  JMediaDeviceInfo = class external 'MediaDeviceInfo'
+  public
+    deviceId: String;
+    kind: JMediaDeviceKind;
+    label: String;
+    groupId: String;
+  end;
+
+  JMediaStreamConstraints = class external 'MediaStreamConstraints'
+  public
+    video: Variant; // TODO
+    audio: Variant; // TODO
+  end;
+
+  // Exposed = Window
+  JMediaDevices = class external 'MediaDevices' (JEventTarget)
+  public
+    ondevicechange: TEventHandler;
+    function enumerateDevices: array of JMediaDeviceInfo;
+    function getSupportedConstraints: JMediaTrackSupportedConstraints;
+    function getUserMedia(constraints: JMediaStreamConstraints): JMediaStream;
+  end;
+
+  TNavigatorUserMediaSuccessCallback = procedure(stream: JMediaStream);
+  TNavigatorUserMediaErrorCallback = procedure(error: TMediaStreamError);
+
+  // Exposed = Window, NoInterfaceObject
+  JNavigatorUserMedia = class external 'NavigatorUserMedia'
+  public
+    mediaDevices: JMediaDevices; { SameObject }
+    procedure getUserMedia(constraints: JMediaStreamConstraints;
+      successCallback: TNavigatorUserMediaSuccessCallback;
+      errorCallback: TNavigatorUserMediaErrorCallback);
+  end;
+
+  JInputDeviceInfo = class external 'InputDeviceInfo' (JMediaDeviceInfo)
+  public
+    function getCapabilities: JMediaTrackCapabilities;
+  end;
+
+  JHTMLIFrameElement = partial class external 'HTMLIFrameElement'
+  public
+    allowUserMedia: Boolean;
+  end;
+
+  JDoubleRange = class external 'DoubleRange'
+  public
+    max: Float;
+    min: Float;
+  end;
+
+  JConstrainDoubleRange = class external 'ConstrainDoubleRange' (JDoubleRange)
+  public
+    exact: Float;
+    ideal: Float;
+  end;
+
+  JLongRange = class external 'LongRange'
+  public
+    max: Integer;
+    min: Integer;
+  end;
+
+  JConstrainLongRange = class external 'ConstrainLongRange' (JLongRange)
+  public
+    exact: Integer;
+    ideal: Integer;
+  end;
+
+  JConstrainBooleanParameters = class external 'ConstrainBooleanParameters'
+  public
+    exact: Boolean;
+    ideal: Boolean;
+  end;
+
+  JConstrainDOMStringParameters = class external 'ConstrainDOMStringParameters'
+  public
+    exact: Variant; // TODO
+    ideal: Variant; // TODO
+  end;
+
+  JCapabilities = class external 'Capabilities'
+  public
+  end;
+
+  JSettings = class external 'Settings'
+  public
+  end;
+
+  JConstraintSet = class external 'ConstraintSet'
+  public
+  end;
+
+  JConstraints = class external 'Constraints' (JConstraintSet)
+  public
+    advanced: array of JConstraintSet;
+  end;
+
+  // NoInterfaceObject
+  JConstrainablePattern = class external 'ConstrainablePattern'
+  public
+    onoverconstrained: TEventHandler;
+    function getCapabilities: JCapabilities;
+    function getConstraints: JConstraints;
+    function getSettings: JSettings;
+    procedure applyConstraints; overload;
+    procedure applyConstraints(constraints: JConstraints); overload;
+  end;

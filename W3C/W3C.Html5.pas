@@ -650,19 +650,10 @@ type
     function addTextTrack(kind: JTextTrackKind; label: String; language: String): JTextTrack; overload;
   end;
 
-  // Constructor( double startTime , double endTime , ArrayBuffer data)
   JDataCue = class external 'DataCue' (JTextTrackCue)
   public
     data: JArrayBuffer;
-  end;
-
-  // Constructor( DOMString type , optional TrackEventInit eventInitDict)
-  JTrackEvent = class external 'TrackEvent' (JEvent)
-  public
-    track: Variant;
-    trackAsAudioTrack: JAudioTrack; external 'track';
-    trackAsVideoTrack: JVideoTrack; external 'track';
-    trackAsTextTrack: JTextTrack; external 'track';
+    constructor Create(startTime, endTime: Float; data: JArrayBuffer);
   end;
 
   JTrackEventInit = class external 'TrackEventInit' (JEventInit)
@@ -671,6 +662,16 @@ type
     trackAsAudioTrack: JAudioTrack; external 'track';
     trackAsVideoTrack: JVideoTrack; external 'track';
     trackAsTextTrack: JTextTrack; external 'track';
+  end;
+
+  JTrackEvent = class external 'TrackEvent' (JEvent)
+  public
+    track: Variant;
+    trackAsAudioTrack: JAudioTrack; external 'track';
+    trackAsVideoTrack: JVideoTrack; external 'track';
+    trackAsTextTrack: JTextTrack; external 'track';
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JTrackEventInit); overload;
   end;
 
   JHTMLMapElement = class external 'HTMLMapElement' (JHTMLElement)
@@ -1116,15 +1117,16 @@ type
     open: Boolean;
   end;
 
-  // Constructor( DOMString type , optional RelatedEventInit eventInitDict)
-  JRelatedEvent = class external 'RelatedEvent' (JEvent)
+  JRelatedEventInit = class external 'RelatedEventInit' (JEventInit)
   public
     relatedTarget: JEventTarget;
   end;
 
-  JRelatedEventInit = class external 'RelatedEventInit' (JEventInit)
+  JRelatedEvent = class external 'RelatedEvent' (JEvent)
   public
     relatedTarget: JEventTarget;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JRelatedEventInit); overload;
   end;
 
   JHTMLDialogElement = class external 'HTMLDialogElement' (JHTMLElement)
@@ -1291,20 +1293,11 @@ type
     returnValue: String;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject,
+	// Exposed = (Window, Worker)
   JNavigatorOnLine = class external 'NavigatorOnLine'
   public
     onLine: Boolean;
-  end;
-
-  // Constructor( DOMString type , optional ErrorEventInit eventInitDict),Exposed=( Window , Worker)
-  JErrorEvent = class external 'ErrorEvent' (JEvent)
-  public
-    message: String;
-    filename: String;
-    lineno: Integer;
-    colno: Integer;
-    error: Variant;
   end;
 
   JErrorEventInit = class external 'ErrorEventInit' (JEventInit)
@@ -1314,6 +1307,18 @@ type
     lineno: Integer;
     colno: Integer;
     error: Variant;
+  end;
+
+	// Exposed = (Window, Worker)
+  JErrorEvent = class external 'ErrorEvent' (JEvent)
+  public
+    message: String;
+    filename: String;
+    lineno: Integer;
+    colno: Integer;
+    error: Variant;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JErrorEventInit); overload;
   end;
 
   JPromiseRejectionEventInit = class external 'PromiseRejectionEventInit' (JEventInit)
@@ -1463,7 +1468,8 @@ type
   JNavigator = class external 'Navigator'
   end;
 
-  // NoInterfaceObject,Exposed = (Window, Worker)
+  // NoInterfaceObject
+	// Exposed = (Window, Worker)
   JNavigatorID = class external 'NavigatorID'
   public
     appCodeName: String; { Exposed=Window }
@@ -1474,7 +1480,8 @@ type
     userAgent: String;
   end;
 
-  // NoInterfaceObject, Exposed = (Window, Worker)
+  // NoInterfaceObject
+	// Exposed = (Window, Worker)
   JNavigatorLanguage = class external 'NavigatorLanguage'
   public
     language: String;

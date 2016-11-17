@@ -17,26 +17,6 @@ type
     procedure close;
   end;
 
-  // Constructor( DOMString type , optional MessageEventInit eventInitDict),Exposed=( Window , Worker)
-  JMessageEvent = class external 'MessageEvent' (JEvent)
-  public
-    data: Variant;
-    origin: String;
-    lastEventId: String;
-    source: Variant;
-    sourceAsMessagePort: JMessagePort; external 'source';
-    sourceAsWindowProxy: JWindowProxy; external 'source';
-    ports: array of JMessagePort;
-    procedure initMessageEvent(typeArg: String; canBubbleArg,
-      cancelableArg: Boolean; dataArg: Variant; originArg,
-      lastEventIdArg: String; sourceArg: JWindowProxy;
-      portsArg: array of JMessagePort); overload;
-    procedure initMessageEvent(typeArg: String; canBubbleArg,
-      cancelableArg: Boolean; dataArg: Variant; originArg,
-      lastEventIdArg: String; sourceArg: JMessagePort;
-      portsArg: array of JMessagePort); overload;
-  end;
-
   JMessageEventInit = class external 'MessageEventInit' (JEventInit)
   public
     data: Variant;
@@ -48,8 +28,31 @@ type
     ports: array of JMessagePort;
   end;
 
-  // Constructor,Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
+  JMessageEvent = class external 'MessageEvent' (JEvent)
+  public
+    data: Variant;
+    origin: String;
+    lastEventId: String;
+    source: Variant;
+    sourceAsMessagePort: JMessagePort; external 'source';
+    sourceAsWindowProxy: JWindowProxy; external 'source';
+    ports: array of JMessagePort;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JMessageEventInit); overload;
+    procedure initMessageEvent(typeArg: String; canBubbleArg,
+      cancelableArg: Boolean; dataArg: Variant; originArg,
+      lastEventIdArg: String; sourceArg: JWindowProxy;
+      portsArg: array of JMessagePort); overload;
+    procedure initMessageEvent(typeArg: String; canBubbleArg,
+      cancelableArg: Boolean; dataArg: Variant; originArg,
+      lastEventIdArg: String; sourceArg: JMessagePort;
+      portsArg: array of JMessagePort); overload;
+  end;
+
+  // Exposed = (Window, Worker)
   JMessageChannel = class external 'MessageChannel'
   public
     port1, port2: JMessagePort;
+    constructor Create;
   end;

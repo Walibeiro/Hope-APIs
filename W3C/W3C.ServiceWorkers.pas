@@ -9,7 +9,8 @@ uses
 type
   JServiceWorkerState = (swsInstalling, swsInstalled, swsActivating, swsActivated, swsRedundant);
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext,
+	// Exposed = (Window, Worker)
   JServiceWorker = class external 'ServiceWorker' (JEventTarget)
   public
     scriptURL: String;
@@ -19,7 +20,8 @@ type
     procedure postMessage(message: Variant; transfer: array of Variant); overload;
   end;
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext
+	// Exposed = (Window, Worker)
   JServiceWorkerRegistration = class external 'ServiceWorkerRegistration' (JEventTarget)
   public
     installing: JServiceWorker;
@@ -37,7 +39,8 @@ type
 // TODO   &type: JWorkerType;
   end;
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext
+	// Exposed = (Window, Worker)
   JServiceWorkerContainer = class external 'ServiceWorkerContainer' (JEventTarget)
   public
     controller: JServiceWorker;
@@ -52,18 +55,6 @@ type
     procedure startMessages;
   end;
 
-  // Constructor( DOMString type , optional ServiceWorkerMessageEventInit eventInitDict),Exposed=( Window , Worker)
-  JServiceWorkerMessageEvent = class external 'ServiceWorkerMessageEvent' (JEvent)
-  public
-    data: Variant;
-    origin: String;
-    lastEventId: String;
-    source: Variant; { SameObject }
-    sourceAsServiceWorker: JServiceWorker; external 'source'; { SameObject }
-    sourceAsMessagePort: JMessagePort; external 'source'; { SameObject }
-//  readonly attribute FrozenArray<MessagePort>? ports;
-  end;
-
   JServiceWorkerMessageEventInit = class external 'ServiceWorkerMessageEventInit' (JEventInit)
   public
     data: Variant;
@@ -75,6 +66,20 @@ type
     ports: array of JMessagePort;
   end;
 
+  // Exposed = (Window, Worker)
+  JServiceWorkerMessageEvent = class external 'ServiceWorkerMessageEvent' (JEvent)
+  public
+    data: Variant;
+    origin: String;
+    lastEventId: String;
+    source: Variant; { SameObject }
+    sourceAsServiceWorker: JServiceWorker; external 'source'; { SameObject }
+    sourceAsMessagePort: JMessagePort; external 'source'; { SameObject }
+//  readonly attribute FrozenArray<MessagePort>? ports;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JServiceWorkerMessageEventInit); overload;
+  end;
+
   JFrameType = String;
   JFrameTypeHelper = strict helper for JFrameType
     const Auxiliary = 'auxiliary';
@@ -83,7 +88,7 @@ type
     const None = 'none';
   end;
 
-  // Exposed=ServiceWorker
+  // Exposed = ServiceWorker
   JClient = class external 'Client'
   public
     url: String;
@@ -138,23 +143,16 @@ type
     procedure skipWaiting; { NewObject }
   end;
 
-  // Constructor( DOMString type , optional ExtendableEventInit eventInitDict),Exposed=ServiceWorker
-  JExtendableEvent = class external 'ExtendableEvent' (JEvent)
-  public
-    procedure waitUntil(f: Variant);
-  end;
-
   JExtendableEventInit = class external 'ExtendableEventInit' (JEventInit)
   public
   end;
 
-  // Constructor( DOMString type , FetchEventInit eventInitDict),Exposed=ServiceWorker
-  JFetchEvent = class external 'FetchEvent' (JExtendableEvent)
+  // Exposed = ServiceWorker
+  JExtendableEvent = class external 'ExtendableEvent' (JEvent)
   public
-    request: JRequest; { SameObject } 
-    clientId: String;
-    isReload: Boolean;
-    procedure respondWith(r: JResponse);
+    procedure waitUntil(f: Variant);
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JExtendableEventInit); overload;
   end;
 
   JFetchEventInit = class external 'FetchEventInit' (JExtendableEventInit)
@@ -164,14 +162,15 @@ type
     isReload: Boolean;
   end;
 
-  // Constructor( DOMString type , optional ExtendableMessageEventInit eventInitDict),Exposed=ServiceWorker
-  JExtendableMessageEvent = class external 'ExtendableMessageEvent' (JExtendableEvent)
+  // Exposed = ServiceWorker
+  JFetchEvent = class external 'FetchEvent' (JExtendableEvent)
   public
-    data: Variant;
-    origin: String;
-    lastEventId: String;
-// TODO    source: Variant; { SameObject }
-//  readonly attribute FrozenArray<MessagePort>? ports;
+    request: JRequest; { SameObject } 
+    clientId: String;
+    isReload: Boolean;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JFetchEventInit); overload;
+    procedure respondWith(r: JResponse);
   end;
 
   JExtendableMessageEventInit = class external 'ExtendableMessageEventInit' (JExtendableEventInit)
@@ -183,6 +182,17 @@ type
     ports: array of JMessagePort;
   end;
 
+  // Exposed=ServiceWorker
+  JExtendableMessageEvent = class external 'ExtendableMessageEvent' (JExtendableEvent)
+  public
+    data: Variant;
+    origin: String;
+    lastEventId: String;
+// TODO    source: Variant; { SameObject }
+//  readonly attribute FrozenArray<MessagePort>? ports;
+    constructor Create(&type: String; eventInitDict: JExtendableMessageEventInit);
+  end;
+
   JCacheQueryOptions = class external 'CacheQueryOptions'
   public
     ignoreSearch: Boolean;
@@ -191,7 +201,7 @@ type
     cacheName: String;
   end;
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext, Exposed = (Window, Worker)
   JCache = class external 'Cache'
   public
     function match(request: JRequest): Variant; overload; { NewObject }
@@ -228,7 +238,7 @@ type
     options: JCacheQueryOptions;
   end;
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext, Exposed = (Window, Worker)
   JCacheStorage = class external 'CacheStorage'
   public
     function match(request: JRequest): Variant; overload; { NewObject }

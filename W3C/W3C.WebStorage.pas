@@ -28,16 +28,6 @@ type
     localStorage: JStorage;
   end;
 
-  // Constructor( DOMString type , optional StorageEventInit eventInitDict)
-  JStorageEvent = class external 'StorageEvent' (JEvent)
-  public
-    key: String;
-    oldValue: String;
-    newValue: String;
-    url: String;
-    storageArea: JStorage;
-  end;
-
   JStorageEventInit = class external 'StorageEventInit' (JEventInit)
   public
     key: String;
@@ -45,4 +35,15 @@ type
     newValue: String;
     url: String;
     storageArea: JStorage;
+  end;
+  
+  JStorageEvent = class external 'StorageEvent' (JEvent)
+  public
+    key: String;
+    oldValue: String;
+    newValue: String;
+    url: String;
+    storageArea: JStorage;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JStorageEventInit); overload;
   end;

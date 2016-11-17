@@ -33,18 +33,29 @@ type
     procedure close;
   end;
 
-  // Constructor( sequence <( Blob or DOMString or ArrayBufferView or ArrayBuffer)>fileBits,[ EnsureUTF16]DOMStringfileName,optionalFilePropertyBagoptions)
+  JFilePropertyBag = class external 'FilePropertyBag'
+  public
+    &type: String;
+    lastModified: Integer;
+  end;
+
   // Exposed = (Window, Worker)
   JFile = class external 'File' (JBlob)
   public
     name: String;
     lastModified: Integer;
-  end;
-
-  JFilePropertyBag = class external 'FilePropertyBag'
-  public
-    &type: String;
-    lastModified: Integer;
+    constructor Create(fileBits: array of JBlob); overload;
+    constructor Create(fileBits: array of JBlob; fileName: String); overload;
+    constructor Create(fileBits: array of JBlob; fileName: String; options: JFilePropertyBag); overload;
+    constructor Create(fileBits: array of String); overload;
+    constructor Create(fileBits: array of String; fileName: String); overload;
+    constructor Create(fileBits: array of String; fileName: String; options: JFilePropertyBag); overload;
+    constructor Create(fileBits: array of JArrayBufferView); overload;
+    constructor Create(fileBits: array of JArrayBufferView; fileName: String); overload;
+    constructor Create(fileBits: array of JArrayBufferView; fileName: String; options: JFilePropertyBag); overload;
+    constructor Create(fileBits: array of JArrayBuffer); overload;
+    constructor Create(fileBits: array of JArrayBuffer; fileName: String); overload;
+    constructor Create(fileBits: array of JArrayBuffer; fileName: String; options: JFilePropertyBag); overload;
   end;
 
   // Exposed = (Window, Worker)
