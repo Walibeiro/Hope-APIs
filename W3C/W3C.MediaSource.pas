@@ -3,7 +3,7 @@ unit W3C.MediaSource;
 interface
 
 uses
-  W3C.DOM4, W3C.HTML5;
+  ECMA.TypedArray, W3C.DOM4, W3C.HTML5;
 
 type
   JReadyState = String;
@@ -41,7 +41,8 @@ type
     onupdateend: TEventHandler;
     onerror: TEventHandler;
     onabort: TEventHandler;
-// TODO    procedure appendBuffer(data: JBufferSource);
+    procedure appendBuffer(data: JArrayBuffer); overload;
+    procedure appendBuffer(data: JArrayBufferView); overload;
     procedure abort;
     procedure remove(start: Float; &end: Float);
   end;

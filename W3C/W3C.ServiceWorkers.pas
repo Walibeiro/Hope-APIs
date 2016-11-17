@@ -7,7 +7,14 @@ uses
   WHATWG.Fetch;
 
 type
-  JServiceWorkerState = (swsInstalling, swsInstalled, swsActivating, swsActivated, swsRedundant);
+  JServiceWorkerState = String;
+  JServiceWorkerStateHelper = strict helper for JServiceWorkerState
+    const Installing = 'installing';
+    const Installed = 'installed';
+    const Activating = 'activating';
+    const Activated = 'activated';
+    const Redundant = 'redundant';
+  end;
 
   // SecureContext,
 	// Exposed = (Window, Worker)

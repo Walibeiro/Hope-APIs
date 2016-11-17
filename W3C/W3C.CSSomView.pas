@@ -75,7 +75,13 @@ type
     function caretPositionFromPoint(x: Float; y: Float): JCaretPosition;
   end;
 
-  JScrollLogicalPosition = (slpStart, slpCenter, slpEnd, slpNearest);
+  JScrollLogicalPosition = String;
+  JScrollLogicalPositionHelper = strict helper for JScrollLogicalPosition 
+     const Start = 'start';
+     const Center = 'center';
+     const &End = 'end';
+     const Nearest = 'nearest';
+  end;
 
   JScrollIntoViewOptions = class external 'ScrollIntoViewOptions'
   public
@@ -151,7 +157,13 @@ type
     clientY: Float;
   end;
 
-  JCSSBoxType = (margin, border, padding, content);
+  JCSSBoxType = String;
+  JCSSBoxTypeHelper = strict helper for JCSSBoxType
+    const Margin = 'margin';
+    const Border = 'border';
+    const Padding = 'padding';
+    const Content = 'content';
+  end;
 
   TGeometryNode = Variant; // TODO
 

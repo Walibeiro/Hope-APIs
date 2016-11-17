@@ -57,7 +57,11 @@ type
     const Explicit = 'explicit';
   end;
 
-  JChannelInterpretation = (ciSpeakers, ciDiscrete);
+  JChannelInterpretation = String;
+  JChannelInterpretationHelper = strict helper for JChannelInterpretation
+    const Speakers = 'speakers';
+    const Discrete = 'discrete';
+  end;
 
   JAudioContextOptions = class external 'AudioContextOptions'
   public
@@ -328,7 +332,17 @@ type
     release: JAudioParam;
   end;
 
-  JBiquadFilterType = (bftLowpass, bftHighpass, bftBandpass, bftLowshelf, bftHighshelf, bftPeaking, bftNotch, bftAllpass);
+  JBiquadFilterType = String;
+  JBiquadFilterTypeHelper = strict helper for JBiquadFilterType
+    const Lowpass = 'lowpass';
+    const Highpass = 'highpass';
+    const Bandpass = 'bandpass';
+    const Lowshelf = 'lowshelf';
+    const Highshelf = 'highshelf';
+    const Peaking = 'peaking';
+    const Notch = 'notch';
+    const Allpass = 'allpass';
+  end;
 
   JBiquadFilterNode = class external 'BiquadFilterNode' (JAudioNode)
   public
