@@ -1,9 +1,10 @@
-unit WHATWG.Spec;
+unit WHATWG.Html;
 
 interface
 
 uses
-  ECMA.TypedArray, WHATWG.DOM;
+  ECMA.TypedArray, WHATWG.DOM, W3C.FileAPI, W3C.UIEvents,
+  W3C.HighResolutionTime;
 
 type
   // LegacyUnenumerableNamedProperties
@@ -90,7 +91,12 @@ type
     property Item[index: Integer]: JHTMLOptionElement read GetItem write SetItem; default;
   end;
 
-  JDocumentReadyState = (drsLoading, drsInteractive, drsComplete);
+  JDocumentReadyState = String;
+  JDocumentReadyStateHelper = strict helper for JDocumentReadyState
+    const Loading = 'loading';
+    const Interactive = 'interactive';
+    const Complete = 'complete';
+  end;
 
   THTMLOrSVGScriptElement = Variant;  // TODO
 
@@ -867,7 +873,7 @@ type
     dirName: String; { CEReactions }
     disabled: Boolean; { CEReactions }
     form: JHTMLFormElement;
-// TODO    files: JFileList;
+    files: JFileList;
     formAction: String; { CEReactions }
     formEnctype: String; { CEReactions }
     formMethod: String; { CEReactions }
@@ -1213,7 +1219,7 @@ type
   THTMLOrSVGImageElement = Variant;
   TCanvasImageSource = Variant;
 
-  // TODO TBlobCallback = procedure(blob: JBlob);
+  TBlobCallback = procedure(blob: JBlob);
 
   // HTMLConstructor
   JHTMLCanvasElement = class external 'HTMLCanvasElement' (JHTMLElement)
@@ -1224,11 +1230,9 @@ type
     function toDataURL: String; overload;
     function toDataURL(&type: String): String; overload;
     function toDataURL(&type: String; quality: Variant): String; overload;
-(* TODO
     procedure toBlob(_callback: TBlobCallback); overload;
     procedure toBlob(_callback: TBlobCallback; &type: String); overload;
     procedure toBlob(_callback: TBlobCallback; &type: String; quality: Variant); overload;
-*)
   end;
 
   JCanvasFillRule = (cfrNonzero, cfrEvenodd);
@@ -1501,6 +1505,29 @@ type
     isContentEditable: Boolean;
   end;
 
+  TFunctionStringCallback = procedure(data: String);
+
+  JDataTransferItem = class external 'DataTransferItem'
+  public
+    kind: String;
+    &type: String;
+    procedure getAsString(_callback: TFunctionStringCallback);
+    function getAsFile: JFile;
+  end;
+
+  JDataTransferItemList = class external 'DataTransferItemList'
+  private
+    function GetItem(Index: Integer): JDataTransferItem;
+  public
+    length: Integer;
+    function add(data: String; &type: String): JDataTransferItem; overload;
+    function add(data: JFile): JDataTransferItem; overload;
+    procedure remove(&index: Integer);
+    procedure clear;
+
+    property Items[Index: Integer]: JDataTransferItem read GetItem;
+  end;
+
   JDataTransfer = class external 'DataTransfer'
   public
     dropEffect: String;
@@ -1514,26 +1541,6 @@ type
     procedure clearData(format: String); overload;
   end;
 
-  JDataTransferItemList = class external 'DataTransferItemList'
-  public
-    length: Integer;
-    function (&index: Integer): JDataTransferItem;
-    function add(data: String; &type: String): JDataTransferItem;
-    function add(data: JFile): JDataTransferItem;
-    procedure remove(&index: Integer);
-    procedure clear;
-  end;
-
-  JDataTransferItem = class external 'DataTransferItem'
-  public
-    kind: String;
-    &type: String;
-    procedure getAsString(_callback: JFunctionStringCallback);
-    function getAsFile: JFile;
-  end;
-
-  JFunctionStringCallback = procedure(data: String);
-
   // Constructor( DOMString type , optional DragEventInit eventInitDict)
   JDragEvent = class external 'DragEvent' (JMouseEvent)
   public
@@ -1543,72 +1550,6 @@ type
   JDragEventInit = class external 'DragEventInit' (JMouseEventInit)
   public
     dataTransfer: JDataTransfer;
-  end;
-
-  // PrimaryGlobal,LegacyUnenumerableNamedProperties
-  JWindow = class external 'Window' (JEventTarget)
-  public
-    window: JWindowProxy; { Unforgeable }
-    self: JWindowProxy; { Replaceable }
-    document: JDocument; { Unforgeable }
-    name: String;
-    location: JLocation; { PutForwards=href,Unforgeable }
-    history: JHistory;
-    customElements: JCustomElementRegistry;
-    locationbar: JBarProp; { Replaceable }
-    menubar: JBarProp; { Replaceable }
-    personalbar: JBarProp; { Replaceable }
-    scrollbars: JBarProp; { Replaceable }
-    statusbar: JBarProp; { Replaceable }
-    toolbar: JBarProp; { Replaceable }
-    status: String;
-    closed: Boolean;
-    frames: JWindowProxy; { Replaceable }
-    length: Integer; { Replaceable }
-    top: JWindowProxy; { Unforgeable }
-    opener: Variant;
-    parent: JWindowProxy; { Replaceable }
-    frameElement: JElement;
-    navigator: JNavigator;
-    applicationCache: JApplicationCache;
-    external: JExternal; { Replaceable,SameObject }
-    procedure close;
-    procedure stop;
-    procedure focus;
-    procedure blur;
-    function open(url: String = about:blank; target: String = _blank; features: String =  { TreatNullAs=EmptyString } ): JWindowProxy;
-    function (&name: String): Variant;
-    procedure alert;
-    procedure alert(message: String);
-    function confirm(message: String = ): Boolean;
-    function prompt(message: String = ; &default: String = ): String;
-    procedure print;
-    function requestAnimationFrame(Callback: JFrameRequestCallback): Integer;
-    procedure cancelAnimationFrame(handle: Integer);
-    procedure postMessage(message: Variant; targetOrigin: String; transfer: array of Variant = );
-    procedure captureEvents;
-    procedure releaseEvents;
-  end;
-
-  JFrameRequestCallback = procedure(time: JDOMHighResTimeStamp);
-
-  JBarProp = class external 'BarProp'
-  public
-    visible: Boolean;
-  end;
-
-  JScrollRestoration = (srAuto, srManual);
-
-  JHistory = class external 'History'
-  public
-    length: Integer;
-    scrollRestoration: JScrollRestoration;
-    state: Variant;
-    procedure go(delta: Integer = 0);
-    procedure back;
-    procedure forward;
-    procedure pushState(data: Variant; title: String; url: String = );
-    procedure replaceState(data: Variant; title: String; url: String = );
   end;
 
   JLocation = class external 'Location'
@@ -1626,6 +1567,31 @@ type
     procedure reload; { Unforgeable }
   end;
 
+  JScrollRestoration = String;
+  JScrollRestorationHelper = strict helper for JScrollRestoration
+    const Auto = 'auto';
+    const Manual = 'manual';
+  end;
+
+  JHistory = class external 'History'
+  public
+    length: Integer;
+    scrollRestoration: JScrollRestoration;
+    state: Variant;
+    procedure go(delta: Integer = 0);
+    procedure back;
+    procedure forward;
+    procedure pushState(data: Variant; title: String); overload;
+    procedure pushState(data: Variant; title: String; url: String); overload;
+    procedure replaceState(data: Variant; title: String); overload;
+    procedure replaceState(data: Variant; title: String; url: String); overload;
+  end;
+
+  JBarProp = class external 'BarProp'
+  public
+    visible: Boolean;
+  end;
+
   // Constructor( DOMString type , optional PopStateEventInit eventInitDict)
   JPopStateEvent = class external 'PopStateEvent' (JEvent)
   public
@@ -1636,6 +1602,8 @@ type
   public
     state: Variant;
   end;
+
+  JFrameRequestCallback = procedure(time: TDOMHighResTimeStamp);
 
   // Constructor( DOMString type , optional HashChangeEventInit eventInitDict)
   JHashChangeEvent = class external 'HashChangeEvent' (JEvent)
@@ -1718,13 +1686,13 @@ type
   // Constructor( DOMString type , PromiseRejectionEventInit eventInitDict),Exposed=( Window , Worker)
   JPromiseRejectionEvent = class external 'PromiseRejectionEvent' (JEvent)
   public
-    promise: any;
+    promise: Variant;
     reason: Variant;
   end;
 
   JPromiseRejectionEventInit = class external 'PromiseRejectionEventInit' (JEventInit)
   public
-    promise: any;
+    promise: Variant;
     reason: Variant;
   end;
 
@@ -1822,23 +1790,40 @@ type
     onpaste: TEventHandler;
   end;
 
-  TTimerHandler = Union;
+  TTimerHandler = Variant;  // TODO
+  TImageBitmapSource = Variant;  // TODO
+  JImageOrientation = (ioNone, ioFlipY);
+  JPremultiplyAlpha = (paNone, paPremultiply, paDefault);
+  JColorSpaceConversion = (cscNone, cscDefault);
+  JResizeQuality = (rqPixelated, rqLow, rqMedium, rqHigh);
+
+
+  JImageBitmapOptions = class external 'ImageBitmapOptions'
+  public
+    imageOrientation: JImageOrientation;
+    premultiplyAlpha: JPremultiplyAlpha;
+    colorSpaceConversion: JColorSpaceConversion;
+    resizeWidth: Integer; { EnforceRange }
+    resizeHeight: Integer; { EnforceRange }
+    resizeQuality: JResizeQuality;
+  end;
+
   // NoInterfaceObject,Exposed=( Window , Worker)
-  JWindowOrWorkerGlobalScope = class external 'WindowOrWorkerGlobalScope'
+  JWindowOrWorkerGlobalScope = partial class external 'WindowOrWorkerGlobalScope'
   public
     origin: String; { Replaceable }
     function btoa(data: String): String;
     function atob(data: String): String;
-    function setTimeout(handler: TTimerHandler; timeout: Integer = 0; arguments: Variant): Integer; overload;
-    function setTimeout(handler: TTimerHandler; timeout: Integer = 0; arguments: Variant): Integer; overload;
+    function setTimeout(handler: TTimerHandler; timeout: Integer = 0): Integer; overload;
+    function setTimeout(handler: TTimerHandler; timeout: Integer; arguments: Variant): Integer; overload;
     procedure clearTimeout(handle: Integer = 0);
-    function setInterval(handler: TTimerHandler; timeout: Integer = 0; arguments: Variant): Integer; overload;
-    function setInterval(handler: TTimerHandler; timeout: Integer = 0; arguments: Variant): Integer; overload;
+    function setInterval(handler: TTimerHandler; timeout: Integer = 0): Integer; overload;
+    function setInterval(handler: TTimerHandler; timeout: Integer; arguments: Variant): Integer; overload;
     procedure clearInterval(handle: Integer = 0);
-    function createImageBitmap(image: TImageBitmapSource): ImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; options: JImageBitmapOptions): ImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; sx: Integer; sy: Integer; sw: Integer; sh: Integer): ImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; sx: Integer; sy: Integer; sw: Integer; sh: Integer; options: JImageBitmapOptions): ImageBitmap; overload;
+    function createImageBitmap(image: TImageBitmapSource): JImageBitmap; overload;
+    function createImageBitmap(image: TImageBitmapSource; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: TImageBitmapSource; sx, sy, sw, sh: Integer): JImageBitmap; overload;
+    function createImageBitmap(image: TImageBitmapSource; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
   end;
 
   JNavigator = class external 'Navigator'
@@ -1883,6 +1868,17 @@ type
     cookieEnabled: Boolean;
   end;
 
+  JPluginArray = partial class external 'PluginArray'
+  public
+    length: Integer;
+    procedure refresh(reload: Boolean = False);
+  end;
+
+  JMimeTypeArray = partial class external 'MimeTypeArray'
+  public
+    length: Integer;
+  end;
+
   // NoInterfaceObject
   JNavigatorPlugins = class external 'NavigatorPlugins'
   public
@@ -1891,32 +1887,19 @@ type
     function javaEnabled: Boolean;
   end;
 
-  // LegacyUnenumerableNamedProperties
-  JPluginArray = class external 'PluginArray'
-  public
-    length: Integer;
-    procedure refresh(reload: Boolean = False);
-    function item(&index: Integer): JPlugin;
-    function namedItem(&name: String): JPlugin;
-  end;
-
-  // LegacyUnenumerableNamedProperties
-  JMimeTypeArray = class external 'MimeTypeArray'
-  public
-    length: Integer;
-    function item(&index: Integer): JMimeType;
-    function namedItem(&name: String): JMimeType;
-  end;
-
-  // LegacyUnenumerableNamedProperties
-  JPlugin = class external 'Plugin'
+  JPlugin = partial class external 'Plugin'
   public
     name: String;
     description: String;
     filename: String;
     length: Integer;
-    function item(&index: Integer): JMimeType;
-    function namedItem(&name: String): JMimeType;
+  end;
+
+  // LegacyUnenumerableNamedProperties
+  JPluginArray = partial class external 'PluginArray'
+  public
+    function item(&index: Integer): JPlugin;
+    function namedItem(&name: String): JPlugin;
   end;
 
   JMimeType = class external 'MimeType'
@@ -1927,23 +1910,29 @@ type
     enabledPlugin: JPlugin;
   end;
 
-  TImageBitmapSource = Union;
-  JImageOrientation = (ioNone, ioFlipY);
-
-  JPremultiplyAlpha = (paNone, paPremultiply, paDefault);
-
-  JColorSpaceConversion = (cscNone, cscDefault);
-
-  JResizeQuality = (rqPixelated, rqLow, rqMedium, rqHigh);
-
-  JImageBitmapOptions = class external 'ImageBitmapOptions'
+  // LegacyUnenumerableNamedProperties
+  JMimeTypeArray = partial class external 'MimeTypeArray'
   public
-    imageOrientation: JImageOrientation;
-    premultiplyAlpha: JPremultiplyAlpha;
-    colorSpaceConversion: JColorSpaceConversion;
-    resizeWidth: Integer; { EnforceRange }
-    resizeHeight: Integer; { EnforceRange }
-    resizeQuality: JResizeQuality;
+    function item(&index: Integer): JMimeType;
+    function namedItem(&name: String): JMimeType;
+  end;
+
+  // LegacyUnenumerableNamedProperties
+  JPlugin = partial class external 'Plugin'
+  public
+    function item(&index: Integer): JMimeType;
+    function namedItem(&name: String): JMimeType;
+  end;
+
+  TMessageEventSource = Variant; // TODO
+
+  // Exposed=( Window , Worker)
+  JMessagePort = class external 'MessagePort' (JEventTarget)
+  public
+    onmessage: TEventHandler;
+    procedure postMessage(message: Variant; transfer: Variant);
+    procedure start;
+    procedure close;
   end;
 
   // Constructor( DOMString type , optional MessageEventInit eventInitDict),Exposed=( Window , Worker)
@@ -1953,7 +1942,9 @@ type
     origin: String;
     lastEventId: String;
     source: TMessageEventSource;
-    procedure initMessageEvent(&type: String; bubbles: Boolean; cancelable: Boolean; data: Variant; origin: String; lastEventId: String; source: TMessageEventSource; ports: array of JMessagePort);
+    procedure initMessageEvent(&type: String; bubbles, cancelable: Boolean;
+      data: Variant; origin: String; lastEventId: String;
+      source: TMessageEventSource; ports: array of JMessagePort);
   end;
 
   JMessageEventInit = class external 'MessageEventInit' (JEventInit)
@@ -1965,7 +1956,6 @@ type
     ports: array of JMessagePort;
   end;
 
-  TMessageEventSource = Union;
   // Constructor( USVString url , optional EventSourceInit eventSourceInitDict),Exposed=( Window , Worker)
   JEventSource = class external 'EventSource' (JEventTarget)
   const
@@ -2010,10 +2000,10 @@ type
     procedure close; overload;
     procedure close(code: Integer { Clamp } ); overload;
     procedure close(code: Integer { Clamp } ; reason: String); overload;
-    procedure send(data: String);
-    procedure send(data: JBlob);
-    procedure send(data: JArrayBuffer);
-    procedure send(data: JArrayBufferView);
+    procedure send(data: String); overload;
+    procedure send(data: JBlob); overload;
+    procedure send(data: JArrayBuffer); overload;
+    procedure send(data: JArrayBufferView); overload;
   end;
 
   // Constructor( DOMString type , optional CloseEventInit eventInitDict),Exposed=( Window , Worker)
@@ -2038,15 +2028,6 @@ type
     port2: JMessagePort;
   end;
 
-  // Exposed=( Window , Worker)
-  JMessagePort = class external 'MessagePort' (JEventTarget)
-  public
-    onmessage: TEventHandler;
-    procedure postMessage(message: Variant; transfer: array of Variant = );
-    procedure start;
-    procedure close;
-  end;
-
   // Constructor( DOMString name),Exposed=( Window , Worker)
   JBroadcastChannel = class external 'BroadcastChannel' (JEventTarget)
   public
@@ -2054,6 +2035,23 @@ type
     onmessage: TEventHandler;
     procedure postMessage(message: Variant);
     procedure close;
+  end;
+
+  // Exposed=Worker
+  JWorkerLocation = class external 'WorkerLocation'
+  public
+    origin: String;
+    protocol: String;
+    host: String;
+    hostname: String;
+    port: String;
+    pathname: String;
+    search: String;
+    hash: String;
+  end;
+
+  // Exposed=Worker
+  JWorkerNavigator = partial class external 'WorkerNavigator'
   end;
 
   // Exposed=Worker
@@ -2075,7 +2073,7 @@ type
   JDedicatedWorkerGlobalScope = class external 'DedicatedWorkerGlobalScope' (JWorkerGlobalScope)
   public
     onmessage: TEventHandler;
-    procedure postMessage(message: Variant; transfer: array of Variant = );
+    procedure postMessage(message: Variant; transfer: Variant); // TODO
     procedure close;
   end;
 
@@ -2099,16 +2097,20 @@ type
   public
     onmessage: TEventHandler;
     procedure terminate;
-    procedure postMessage(message: Variant; transfer: array of Variant = );
+    procedure postMessage(message: Variant; transfer: Variant); // TODO
+  end;
+
+  JWorkerType = String;
+  JWorkerTypeHelper = strict helper for JWorkerType
+    const Classic = 'classic';
+    const Module = 'module';
   end;
 
   JWorkerOptions = class external 'WorkerOptions'
   public
     &type: JWorkerType;
-    credentials: JRequestCredentials;
+// TODO    credentials: JRequestCredentials;
   end;
-
-  JWorkerType = (wtClassic, wtModule);
 
   // Constructor( USVString scriptURL , optional DOMString name , optional WorkerOptions options),Exposed=( Window , Worker)
   JSharedWorker = class external 'SharedWorker' (JEventTarget)
@@ -2120,23 +2122,6 @@ type
   JNavigatorConcurrentHardware = class external 'NavigatorConcurrentHardware'
   public
     hardwareConcurrency: Integer;
-  end;
-
-  // Exposed=Worker
-  JWorkerNavigator = class external 'WorkerNavigator'
-  end;
-
-  // Exposed=Worker
-  JWorkerLocation = class external 'WorkerLocation'
-  public
-    origin: String;
-    protocol: String;
-    host: String;
-    hostname: String;
-    port: String;
-    pathname: String;
-    search: String;
-    hash: String;
   end;
 
   JStorage = class external 'Storage'
@@ -2288,15 +2273,16 @@ type
     anchors: JHTMLCollection; { SameObject }
     applets: JHTMLCollection; { SameObject }
     all: JHTMLAllCollection; { SameObject }
-    function (&name: String): Variant;
+// TODO    function (&name: String): Variant;
     function getElementsByName(elementName: String): JNodeList;
-    function open(&type: String = text/html; replace: String = ): JDocument; { CEReactions }
+// TODO    function open(&type: String = 'text/html'; replace: String = ): JDocument; { CEReactions }
     function open(url: String; &name: String; features: String): JWindowProxy;
     procedure close; { CEReactions }
     procedure write(text: String); { CEReactions }
     procedure writeln(text: String); { CEReactions }
     function hasFocus: Boolean;
-    function execCommand(commandId: String; showUI: Boolean = False; value: String = ): Boolean; { CEReactions }
+    function execCommand(commandId: String; showUI: Boolean = False): Boolean; overload; { CEReactions }
+    function execCommand(commandId: String; showUI: Boolean; value: String): Boolean; overload; { CEReactions }
     function queryCommandEnabled(commandId: String): Boolean;
     function queryCommandIndeterm(commandId: String): Boolean;
     function queryCommandState(commandId: String): Boolean;
@@ -2306,3 +2292,50 @@ type
     procedure captureEvents;
     procedure releaseEvents;
   end;
+
+(*
+  // PrimaryGlobal,LegacyUnenumerableNamedProperties
+  JWindow = partial class external 'Window' (JEventTarget)
+  public
+    window: JWindowProxy; { Unforgeable }
+    self: JWindowProxy; { Replaceable }
+    document: JDocument; { Unforgeable }
+    name: String;
+    location: JLocation; { PutForwards=href,Unforgeable }
+    history: JHistory;
+    customElements: JCustomElementRegistry;
+    locationbar: JBarProp; { Replaceable }
+    menubar: JBarProp; { Replaceable }
+    personalbar: JBarProp; { Replaceable }
+    scrollbars: JBarProp; { Replaceable }
+    statusbar: JBarProp; { Replaceable }
+    toolbar: JBarProp; { Replaceable }
+    status: String;
+    closed: Boolean;
+    frames: JWindowProxy; { Replaceable }
+    length: Integer; { Replaceable }
+    top: JWindowProxy; { Unforgeable }
+    opener: Variant;
+    parent: JWindowProxy; { Replaceable }
+    frameElement: JElement;
+    navigator: JNavigator;
+    applicationCache: JApplicationCache;
+    external: JExternal; { Replaceable,SameObject }
+    procedure close;
+    procedure stop;
+    procedure focus;
+    procedure blur;
+    function open(url: String = about:blank; target: String = _blank; features: String =  { TreatNullAs=EmptyString } ): JWindowProxy;
+    function (&name: String): Variant;
+    procedure alert;
+    procedure alert(message: String);
+    function confirm(message: String = ): Boolean;
+    function prompt(message: String = ; &default: String = ): String;
+    procedure print;
+    function requestAnimationFrame(Callback: JFrameRequestCallback): Integer;
+    procedure cancelAnimationFrame(handle: Integer);
+    procedure postMessage(message: Variant; targetOrigin: String; transfer: array of Variant = );
+    procedure captureEvents;
+    procedure releaseEvents;
+  end;
+*)

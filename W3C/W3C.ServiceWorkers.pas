@@ -154,7 +154,7 @@ type
     request: JRequest; { SameObject } 
     clientId: String;
     isReload: Boolean;
-    procedure respondWith(r: Response);
+    procedure respondWith(r: JResponse);
   end;
 
   JFetchEventInit = class external 'FetchEventInit' (JExtendableEventInit)
@@ -170,7 +170,7 @@ type
     data: Variant;
     origin: String;
     lastEventId: String;
-    source: Union; { SameObject } 
+// TODO    source: Variant; { SameObject }
 //  readonly attribute FrozenArray<MessagePort>? ports;
   end;
 
@@ -179,13 +179,8 @@ type
     data: Variant;
     origin: String;
     lastEventId: String;
-    source: Union;
+// TODO    source: Variant; { SameObject }
     ports: array of JMessagePort;
-  end;
-
-  JWindowOrWorkerGlobalScope = partial class external 'WindowOrWorkerGlobalScope'
-  public
-    caches: JCacheStorage; { SecureContext,SameObject } 
   end;
 
   JCacheQueryOptions = class external 'CacheQueryOptions'
@@ -199,19 +194,30 @@ type
   // SecureContext,Exposed=( Window , Worker)
   JCache = class external 'Cache'
   public
-    function match(request: JRequestInfo): Variant; overload; { NewObject }
-    function match(request: JRequestInfo; options: JCacheQueryOptions): any; overload; { NewObject } 
-    function matchAll: array of Response; overload; { NewObject } 
-    function matchAll(request: JRequestInfo): array of Response; overload; { NewObject } 
-    function matchAll(request: JRequestInfo; options: JCacheQueryOptions): array of Response; overload; { NewObject } 
-    function add(request: JRequestInfo): void; { NewObject } 
-    function addAll(requests: array of JRequestInfo): void; { NewObject } 
-    function put(request: JRequestInfo; response: JResponse): void; { NewObject } 
-    function delete(request: JRequestInfo): boolean; overload; { NewObject } 
-    function delete(request: JRequestInfo; options: JCacheQueryOptions): boolean; overload; { NewObject } 
+    function match(request: JRequest): Variant; overload; { NewObject }
+    function match(request: String): Variant; overload; { NewObject }
+    function match(request: JRequest; options: JCacheQueryOptions): Variant; overload; { NewObject }
+    function match(request: String; options: JCacheQueryOptions): Variant; overload; { NewObject }
+    function matchAll: array of JResponse; overload; { NewObject }
+    function matchAll(request: JRequest): array of JResponse; overload; { NewObject }
+    function matchAll(request: String): array of JResponse; overload; { NewObject }
+    function matchAll(request: JRequest; options: JCacheQueryOptions): array of JResponse; overload; { NewObject }
+    function matchAll(request: String; options: JCacheQueryOptions): array of JResponse; overload; { NewObject }
+    procedure add(request: JRequest); overload; { NewObject }
+    procedure add(request: String); overload; { NewObject }
+    procedure addAll(requests: array of JRequest); overload; { NewObject }
+    procedure addAll(requests: array of String); overload; { NewObject }
+    procedure put(request: JRequest; response: JResponse); overload; { NewObject }
+    procedure put(request: String; response: JResponse); overload; { NewObject }
+    function delete(request: JRequest): boolean; overload; { NewObject }
+    function delete(request: String): boolean; overload; { NewObject }
+    function delete(request: JRequest; options: JCacheQueryOptions): boolean; overload; { NewObject }
+    function delete(request: String; options: JCacheQueryOptions): boolean; overload; { NewObject }
     function keys: array of JRequest; overload; { NewObject }
-    function keys(request: JRequestInfo): array of JRequest; overload; { NewObject }
-    function keys(request: JRequestInfo; options: JCacheQueryOptions): array of JRequest; overload; { NewObject }
+    function keys(request: JRequest): array of JRequest; overload; { NewObject }
+    function keys(request: String): array of JRequest; overload; { NewObject }
+    function keys(request: JRequest; options: JCacheQueryOptions): array of JRequest; overload; { NewObject }
+    function keys(request: String; options: JCacheQueryOptions): array of JRequest; overload; { NewObject }
   end;
 
   JCacheBatchOperation = class external 'CacheBatchOperation'
@@ -225,20 +231,30 @@ type
   // SecureContext,Exposed=( Window , Worker)
   JCacheStorage = class external 'CacheStorage'
   public
-    function match(request: JRequestInfo): any; overload; { NewObject } 
-    function match(request: JRequestInfo; options: JCacheQueryOptions): any; overload; { NewObject } 
+    function match(request: JRequest): Variant; overload; { NewObject }
+    function match(request: String): Variant; overload; { NewObject }
+    function match(request: JRequest; options: JCacheQueryOptions): Variant; overload; { NewObject }
+    function match(request: String; options: JCacheQueryOptions): Variant; overload; { NewObject }
     function has(cacheName: String): boolean; { NewObject } 
-    function open(cacheName: String): Cache; { NewObject } 
+    function open(cacheName: String): JCache; { NewObject }
     function delete(cacheName: String): boolean; { NewObject } 
-    function keys: array of DOMString; { NewObject } 
+    function keys: array of String; { NewObject }
   end;
 
+(*
+  // TODO
   JWorkerNavigator = partial class external 'WorkerNavigator'
   public
     serviceWorker: JServiceWorkerContainer; { SecureContext,SameObject }
   end;
+*)
 
   JNavigator = partial class external 'Navigator'
   public
     serviceWorker: JServiceWorkerContainer; { SecureContext,SameObject }
+  end;
+
+  JWindowOrWorkerGlobalScope = partial class external 'WindowOrWorkerGlobalScope'
+  public
+    caches: JCacheStorage; { SecureContext,SameObject }
   end;

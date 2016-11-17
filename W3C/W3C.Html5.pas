@@ -90,7 +90,12 @@ type
     property Item[index: Integer]: JHTMLOptionElement read GetItem write SetItem; default;
   end;
 
-  JDocumentReadyState = (drsLoading, drsInteractive, drsComplete);
+  JDocumentReadyState = String;
+  JDocumentReadyStateHelper = strict helper for JDocumentReadyState
+    const Loading = 'loading';
+    const Interactive = 'interactive';
+    const Complete = 'complete';
+  end;
 
   JHTMLScriptElement = class external 'HTMLScriptElement' (JHTMLElement)
   public
@@ -1220,7 +1225,11 @@ type
     visible: Boolean;
   end;
 
-  JScrollRestoration = (srAuto, srManual);
+  JScrollRestoration = String;
+  JScrollRestorationHelper = strict helper for JScrollRestoration
+    const Auto = 'auto';
+    const Manual = 'manual';
+  end;
 
   JHistory = class external 'History'
   public
