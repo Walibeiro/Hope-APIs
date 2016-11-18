@@ -1,0 +1,66 @@
+unit ECMA.Date;
+
+interface
+
+type
+  JDate = class external 'Date'
+    constructor Create; overload;
+    constructor Create(ms: Integer); overload;
+    constructor Create(value: String); overload;
+    constructor Create(year, month: Integer); overload;
+    constructor Create(year, month, day: Integer); overload;
+    constructor Create(year, month, day, hours: Integer); overload;
+    constructor Create(year, month, day, hours, minutes: Integer); overload;
+    constructor Create(year, month, day, hours, minutes, seconds: Integer); overload;
+    constructor Create(year, month, day, hours, minutes, seconds, ms: Integer); overload;
+    class function now: Integer;
+    class function parse(dateString: String): Integer;
+    class function UTC(year, month: Integer): Integer; overload;
+    class function UTC(year, month, day: Integer): Integer; overload;
+    class function UTC(year, month, day, hours: Integer): Integer; overload;
+    class function UTC(year, month, day, hours, minutes: Integer): Integer; overload;
+    class function UTC(year, month, day, hours, minutes, seconds: Integer): Integer; overload;
+    class function UTC(year, month, day, hours, minutes, seconds, ms: Integer): Integer; overload;
+    function getDate: Integer;
+    function getDay: Integer;
+    function getFullYear: Integer;
+    function getHours: Integer;
+    function getMilliseconds: Integer;
+    function getMinutes: Integer;
+    function getMonth: Integer;
+    function getSeconds: Integer;
+    function getTime: Integer;
+    function getTimezoneOffset: Integer;
+    function getUTCDate: Integer;
+    function getUTCDay: Integer;
+    function getUTCFullYear: Integer;
+    function getUTCHours: Integer;
+    function getUTCMilliseconds: Integer;
+    function getUTCMinutes: Integer;
+    function getUTCMonth: Integer;
+    function getUTCSeconds: Integer;
+    procedure setDate(value: Integer);
+    procedure setFullYear(value: Integer);
+    procedure setHours(value: Integer);
+    procedure setMilliseconds(value: Integer);
+    procedure setMinutes(value: Integer);
+    procedure setMonth(value: Integer);
+    procedure setSeconds(value: Integer);
+    procedure setTime(value: Float);
+    procedure setUTCDate(value: Integer);
+    procedure setUTCFullYear(value: Integer);
+    procedure setUTCHours(value: Integer);
+    procedure setUTCMilliseconds(value: Integer);
+    procedure setUTCMinutes(value: Integer);
+    procedure setUTCMonth(value: Integer);
+    procedure setUTCSeconds(value: Integer);
+    function toDateString: String;
+    function toISOString: String;
+    function toJSON(key: String): String;
+    function toLocaleDateString: String;
+    function toLocaleString: String;
+    function toLocaleTimeString: String;
+    function toString: String;
+    function toTimeString: String;
+    function toUTCString: String;
+  end;
