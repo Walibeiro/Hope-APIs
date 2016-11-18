@@ -1,4 +1,4 @@
-unit W3C.CSSom;
+unit W3C.CSSOM;
 
 interface
 
@@ -121,6 +121,11 @@ type
   public
     selectorText: String;
     style: JCSSStyleDeclaration; { SameObject,PutForwards=cssText }
+  end;
+
+  JCSSFontFaceRule = class external 'CSSPageRule' (JCSSRule)
+  public
+    style: JCSSStyleDeclaration;
   end;
 
   JCSSMarginRule = class external 'CSSMarginRule' (JCSSRule)

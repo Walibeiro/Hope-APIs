@@ -3,7 +3,7 @@ unit W3C.WebWorkers;
 interface
 
 uses
-  W3C.DOM4, W3C.Html5, W3C.WebMessaging;
+  W3C.DOM4, W3C.HTML5, W3C.WebMessaging;
 
 type
   // Exposed = Worker

@@ -3,7 +3,7 @@ unit W3C.ShadowDOM;
 interface
 
 uses
-  W3C.DOM4, W3C.Html5, W3C.CSSOM;
+  W3C.DOM4, W3C.HTML5, W3C.CSSOM;
 
 type
 	JShadowRootMode = String;

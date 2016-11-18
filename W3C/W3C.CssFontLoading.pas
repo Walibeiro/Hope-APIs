@@ -1,12 +1,11 @@
-unit W3C.CssFontLoading;
+unit W3C.CSSFontLoading;
 
 interface
 
 uses
-  W3C.DOM4;
+  ECMA.Promise, ECMA.TypedArray, W3C.DOM4, W3C.CSSOM;
 
 type
-  TBinaryData = Variant; // TODO
   JFontFaceDescriptors = class external 'FontFaceDescriptors'
   public
     style: String;
@@ -17,10 +16,15 @@ type
     featureSettings: String;
   end;
 
-  JFontFaceLoadStatus = (fflsUnloaded, fflsLoading, fflsLoaded, fflsError);
+  JFontFaceLoadStatus = String;
+  JFontFaceLoadStatusHelper = strict helper for JFontFaceLoadStatus
+    const Unloaded = 'unloaded';
+    const Loading = 'loading';
+    const Loaded = 'loaded';
+    const error = 'error';
+  end;
 
-  // Constructor( DOMString family ,( DOMString or BinaryData)source,FontFaceDescriptorsdescriptors)
-  JFontFace = class external 'FontFace'
+  JFontFace = partial class external 'FontFace'
   public
     family: String;
     style: String;
@@ -31,23 +35,40 @@ type
     featureSettings: String;
     status: JFontFaceLoadStatus;
     loaded: boolean;
-    function load: JFontFace;
+    constructor Create(family: String; source: String; descriptors: JFontFaceDescriptors); overload;
+    constructor Create(family: String; source: JArrayBuffer; descriptors: JFontFaceDescriptors); overload;
+    constructor Create(family: String; source: JArrayBufferView; descriptors: JFontFaceDescriptors); overload;
+  end;
+
+  TOnFulFilledFontFace = procedure(response: JFontFace);
+  JPromiseFontFace = class external 'Promise' (JPromise)
+  public
+    class function resolve(value: JFontFace): JPromiseFontFace;
+
+    function &then(onFulfilled: TOnFulFilledFontFace): JPromiseFontFace; overload;
+    function &then(onFulfilled: TOnFulFilledFontFace; onRejected: TOnRejected): JPromiseFontFace; overload;
+  end;
+
+  JFontFace = partial class external 'FontFace'
+  public
+    function load: JPromiseFontFace;
   end;
 
   JCSSFontFaceLoadEventInit = class external 'CSSFontFaceLoadEventInit' (JEventInit)
   public
-// TODO    fontfaces: array of JCSSFontFaceRule;
+    fontfaces: array of JCSSFontFaceRule;
   end;
 
-  // Constructor( DOMString type , optional CSSFontFaceLoadEventInit eventInitDict)
   JCSSFontFaceLoadEvent = class external 'CSSFontFaceLoadEvent' (JEvent)
   public
-// TODO    fontfaces: array of JCSSFontFaceRule;
+    fontfaces: array of JCSSFontFaceRule;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JCSSFontFaceLoadEventInit); overload;
   end;
 
   JFontFaceSetLoadStatus = (ffslsLoading, ffslsLoaded);
 
-  // SetClass( FontFace)
+  // SetClass(FontFace)
   JFontFaceSet = class external 'FontFaceSet'
   public
     onloading: TEventHandler;

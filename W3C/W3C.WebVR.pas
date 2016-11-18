@@ -3,12 +3,17 @@ unit W3C.WebVR;
 interface
 
 uses
-  ECMA.TypedArray, W3C.DOM4, W3C.HighResolutionTime, W3C.Gamepad;
+  ECMA.Promise, ECMA.TypedArray, W3C.DOM4, W3C.HTML5, W3C.HighResolutionTime,
+  W3C.Gamepad;
 
 type
   TVRSource = Variant; //TODO
 
-  JVREye = (left, right);
+  JVREye = String;
+  JVREyeHelper = strict helper for JVREye
+    const left = 'left';
+    const right = 'right';
+  end;
 
   JVRLayerInit = class external 'VRLayerInit'
   public
@@ -85,35 +90,52 @@ type
   public
     isConnected: Boolean;
     isPresenting: Boolean;
+
+    { Dictionary of capabilities describing the VRDisplay }
     capabilities: JVRDisplayCapabilities; { SameObject }
+
+    { If this VRDisplay supports room-scale experiences, the optional
+      stage attribute contains details on the room-scale parameters.
+      The stageParameters attribute can not change between null
+      and non-null once the VRDisplay is enumerated; however,
+      the values within VRStageParameters may change after
+      any call to VRDisplay.submitFrame as the user may re-configure
+      their environment at any time. }
     stageParameters: JVRStageParameters;
+
     displayId: Integer;
+
+    (* A display name, a user-readable name identifying it. *)
     displayName: String;
+
     depthNear: Float;
     depthFar: Float;
+
+    {  Return the current VREyeParameters for the given eye. }
     function getEyeParameters(whichEye: JVREye): JVREyeParameters;
+
     function getFrameData(frameData: JVRFrameData): Boolean;
     function getPose: JVRPose; { NewObject }
     procedure resetPose;
 // TODO    function requestAnimationFrame(Callback: JFrameRequestCallback): Integer;
     procedure cancelAnimationFrame(handle: Integer);
-    procedure requestPresent(layers: array of JVRLayerInit);
-    procedure exitPresent;
+    function requestPresent(layers: array of JVRLayerInit): JPromise;
+    function exitPresent: JPromise;
     function getLayers: array of JVRLayer;
     procedure submitFrame;
-  end;
-
-  // Constructor( DOMString type , VRDisplayEventInit eventInitDict)
-  JVRDisplayEvent = class external 'VRDisplayEvent' (JEvent)
-  public
-    display: JVRDisplay;
-    reason: JVRDisplayEventReason;
   end;
 
   JVRDisplayEventInit = class external 'VRDisplayEventInit' (JEventInit)
   public
     display: JVRDisplay;
     reason: JVRDisplayEventReason;
+  end;
+
+  JVRDisplayEvent = class external 'VRDisplayEvent' (JEvent)
+  public
+    display: JVRDisplay;
+    reason: JVRDisplayEventReason;
+    constructor Create(&type: String; eventInitDict: JVRDisplayEventInit);
   end;
 
   JHTMLIFrameElement = partial class external 'HTMLIFrameElement'
@@ -126,10 +148,19 @@ type
     displayId: Integer;
   end;
 
+  TOnFulFilledVRDisplays = procedure(response: array of JVRDisplay);
+  JPromiseVRDisplays = class external 'Promise' (JPromise)
+  public
+    class function resolve(value: array of JVRDisplay): JPromiseVRDisplays;
+
+    function &then(onFulfilled: TOnFulFilledVRDisplays): JPromiseVRDisplays; overload;
+    function &then(onFulfilled: TOnFulFilledVRDisplays; onRejected: TOnRejected): JPromiseVRDisplays; overload;
+  end;
+
   JNavigator = partial class external 'Navigator'
   public
     vrEnabled: Boolean;
-    function getVRDisplays: array of JVRDisplay;
+    function getVRDisplays: JPromiseVRDisplays;
   end;
 
   JWindow = partial class external 'Window'

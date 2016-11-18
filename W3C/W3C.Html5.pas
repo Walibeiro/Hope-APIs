@@ -3,14 +3,15 @@ unit W3C.HTML5;
 interface
 
 uses
-  ECMA.TypedArray, W3C.DOM4, W3C.FileAPI, W3C.UIEvents, W3C.HighResolutionTime;
+  ECMA.Promise, ECMA.TypedArray, W3C.DOM4, W3C.FileAPI, W3C.UIEvents,
+  W3C.HighResolutionTime;
 
 type
   // OverrideBuiltins
   JDOMStringMap = class external 'DOMStringMap'
   private
     function GetNamedItem(name: String): String; external array;
-    procedure SetNamedItem(name: String; value: String);
+    procedure SetNamedItem(name, value: String);
   public
     property Items[Name: String]: String read GetNamedItem write SetNamedItem; default;
   end;
@@ -332,7 +333,7 @@ type
 
   JWindowProxy = JWindow;
 
-  JHTMLIFrameElement = class external 'HTMLIFrameElement' (JHTMLElement)
+  JHTMLIFrameElement = partial class external 'HTMLIFrameElement' (JHTMLElement)
   public
     src: String;
     srcdoc: String;
@@ -652,7 +653,7 @@ type
     textTracks: JTextTrackList; { SameObject }
     function addTextTrack(kind: JTextTrackKind): JTextTrack; overload;
     function addTextTrack(kind: JTextTrackKind; label: String): JTextTrack; overload;
-    function addTextTrack(kind: JTextTrackKind; label: String; language: String): JTextTrack; overload;
+    function addTextTrack(kind: JTextTrackKind; label, language: String): JTextTrack; overload;
   end;
 
   JDataCue = class external 'DataCue' (JTextTrackCue)
@@ -906,10 +907,10 @@ type
     procedure setCustomValidity(error: String);
     procedure select;
     procedure setRangeText(replacement: String); overload;
-    procedure setRangeText(replacement: String; start: Integer; &end: Integer); overload;
-    procedure setRangeText(replacement: String; start: Integer; &end: Integer; selectionMode: JSelectionMode); overload;
-    procedure setSelectionRange(start: Integer; &end: Integer); overload;
-    procedure setSelectionRange(start: Integer; &end: Integer; direction: String); overload;
+    procedure setRangeText(replacement: String; start, &end: Integer); overload;
+    procedure setRangeText(replacement: String; start, &end: Integer; selectionMode: JSelectionMode); overload;
+    procedure setSelectionRange(start, &end: Integer); overload;
+    procedure setSelectionRange(start, &end: Integer; direction: String); overload;
   end;
 
   JHTMLMenuElement = class external 'HTMLMenuElement' (JHTMLElement)
@@ -1058,10 +1059,10 @@ type
     procedure setCustomValidity(error: String);
     procedure select;
     procedure setRangeText(replacement: String); overload;
-    procedure setRangeText(replacement: String; start: Integer; &end: Integer); overload;
-    procedure setRangeText(replacement: String; start: Integer; &end: Integer; selectionMode: JSelectionMode); overload;
-    procedure setSelectionRange(start: Integer; &end: Integer); overload;
-    procedure setSelectionRange(start: Integer; &end: Integer; direction: String); overload;
+    procedure setRangeText(replacement: String; start, &end: Integer); overload;
+    procedure setRangeText(replacement: String; start, &end: Integer; selectionMode: JSelectionMode); overload;
+    procedure setSelectionRange(start, &end: Integer); overload;
+    procedure setSelectionRange(start, &end: Integer; direction: String); overload;
   end;
 
   JHTMLOutputElement = class external 'HTMLOutputElement' (JHTMLElement)
@@ -1210,7 +1211,7 @@ type
     items: JDataTransferItemList; { SameObject }
     types: array of String; { SameObject }
     files: JFileList; { SameObject }
-    procedure setDragImage(image: JElement; x: Integer; y: Integer);
+    procedure setDragImage(image: JElement; x, y: Integer);
     function getData(format: String): String;
     procedure setData(format: String; data: String);
     procedure clearData; overload;
@@ -1251,9 +1252,9 @@ type
     procedure back;
     procedure forward;
     procedure pushState(data: Variant; title: String); overload;
-    procedure pushState(data: Variant; title: String; url: String); overload;
+    procedure pushState(data: Variant; title, url: String); overload;
     procedure replaceState(data: Variant; title: String); overload;
-    procedure replaceState(data: Variant; title: String; url: String); overload;
+    procedure replaceState(data: Variant; title, url: String); overload;
   end;
 
   JPopStateEventInit = class external 'PopStateEventInit' (JEventInit)
@@ -1332,14 +1333,14 @@ type
 
   JPromiseRejectionEventInit = class external 'PromiseRejectionEventInit' (JEventInit)
   public
-    promise: Variant;
+    promise: JPromise; // required
     reason: Variant;
   end;
 
   // Exposed = (Window, Worker)
   JPromiseRejectionEvent = class external 'PromiseRejectionEvent' (JEvent)
   public
-    promise: Variant;
+    promise: JPromise;
     reason: Variant;
     constructor Create(&type: String); overload;
     constructor Create(&type: String; eventInitDict: JPromiseRejectionEventInit); overload;
@@ -1447,24 +1448,36 @@ type
     height: Integer;
   end;
 
+  TOnFulFilledImageBitmap = procedure(response: JImageBitmap);
+  JPromiseImageBitmap = class external 'Promise' (JPromise)
+  public
+    class function resolve(value: JImageBitmap): JPromiseImageBitmap;
+
+    function &then(onFulfilled: TOnFulFilledImageBitmap): JPromiseImageBitmap; overload;
+    function &then(onFulfilled: TOnFulFilledImageBitmap; onRejected: TOnRejected): JPromiseImageBitmap; overload;
+  end;
+
   // NoInterfaceObject, Exposed = (Window, Worker)
   JWindowOrWorkerGlobalScope = class external 'WindowOrWorkerGlobalScope'
   public
     origin: String; { Replaceable }
     function btoa(btoa: String): String;
     function atob(atob: String): String;
+
     function setTimeout(handler: TTimerHandler): Integer; overload;
     function setTimeout(handler: TTimerHandler; timeout: Integer): Integer; overload;
     function setTimeout(handler: TTimerHandler; timeout: Integer; arguments: Variant): Integer; overload;
     procedure clearTimeout(handle: Integer = 0);
+
     function setInterval(handler: TTimerHandler): Integer; overload;
     function setInterval(handler: TTimerHandler; timeout: Integer): Integer; overload;
     function setInterval(handler: TTimerHandler; timeout: Integer; arguments: Variant): Integer; overload;
     procedure clearInterval(handle: Integer = 0);
-    function createImageBitmap(image: Variant): JImageBitmap; overload;
-    function createImageBitmap(image: JBlob): JImageBitmap; overload;
-    function createImageBitmap(image: Variant; sx, sy, sw, sh: Integer): JImageBitmap; overload;
-    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JImageBitmap; overload;
+
+    function createImageBitmap(image: Variant): JPromiseImageBitmap; overload;
+    function createImageBitmap(image: JBlob): JPromiseImageBitmap; overload;
+    function createImageBitmap(image: Variant; sx, sy, sw, sh: Integer): JPromiseImageBitmap; overload;
+    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JPromiseImageBitmap; overload;
   end;
 
   // NoInterfaceObject
@@ -1500,12 +1513,12 @@ type
   // NoInterfaceObject
   JNavigatorContentUtils = class external 'NavigatorContentUtils'
   public
-    procedure registerProtocolHandler(scheme: String; url: String; title: String);
-    procedure registerContentHandler(mimeType: String; url: String; title: String);
-    function isProtocolHandlerRegistered(scheme: String; url: String): String;
-    function isContentHandlerRegistered(mimeType: String; url: String): String;
-    procedure unregisterProtocolHandler(scheme: String; url: String);
-    procedure unregisterContentHandler(mimeType: String; url: String);
+    procedure registerProtocolHandler(scheme, url, title: String);
+    procedure registerContentHandler(mimeType, url, title: String);
+    function isProtocolHandlerRegistered(scheme, url: String): String;
+    function isContentHandlerRegistered(mimeType, url: String): String;
+    procedure unregisterProtocolHandler(scheme, url: String);
+    procedure unregisterContentHandler(mimeType, url: String);
   end;
 
   JMimeType = partial class external 'MimeType';
@@ -1668,8 +1681,8 @@ type
     function getElementsByName(elementName: String): JNodeList;
     function open: JDocument; overload;
     function open(&type: String): JDocument; overload;
-    function open(&type: String; replace: String): JDocument; overload;
-    function open(url: String; &name: String; features: String; replace: Boolean = False): JWindowProxy; overload;
+    function open(&type, replace: String): JDocument; overload;
+    function open(url, name, features: String; replace: Boolean = False): JWindowProxy; overload;
     procedure close;
     procedure write(text: String);
     procedure writeln(text: String);
@@ -1690,7 +1703,7 @@ type
   end;
 
   // PrimaryGlobal, LegacyUnenumerableNamedProperties
-  JWindow = class external 'Window' (JEventTarget)
+  JWindow = partial class external 'Window' (JEventTarget)
   private
     function GetIndexedItem(index: Integer): JWindowProxy; external array;
     function GetNamedItem(name: String): JObject; external array;

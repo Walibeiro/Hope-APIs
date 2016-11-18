@@ -3,7 +3,7 @@ unit W3C.ScreenOrientation;
 interface
 
 uses
-  W3C.DOM4;
+  ECMA.Promise, W3C.DOM4;
 
 type
   JOrientationType = String;
@@ -27,15 +27,21 @@ type
   end;
 
   JScreenOrientation = class external 'ScreenOrientation' (JEventTarget)
+  private
+    FType: JOrientationType; external 'type';
+    FAngle: Integer; external 'angle';
   public
-    &type: JOrientationType;
-    angle: Integer;
     onchange: TEventHandler;
-    procedure lock(orientation: JOrientationLockType);
+    function lock(orientation: JOrientationLockType): JPromise;
     procedure unlock;
+
+    property &Type: JOrientationType read FType;
+    property Angle: Integer read FAngle;
   end;
 
   JScreen = partial class external 'Screen'
+  private
+    FOrientation: JScreenOrientation; external 'orientation';
   public
-    orientation: JScreenOrientation;
+    property Orientation: JScreenOrientation read FOrientation;
   end;

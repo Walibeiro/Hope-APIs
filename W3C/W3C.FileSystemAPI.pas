@@ -61,7 +61,7 @@ type
     Flush: Boolean;
   end;
 
-  // Exposed=Window,Worker
+  // Exposed = Window, Worker
   JDirectory = partial class external 'Directory'
   public
     name: String;

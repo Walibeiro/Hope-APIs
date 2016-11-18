@@ -3,7 +3,7 @@ unit W3C.BatteryStatus;
 interface
 
 uses
-  W3C.DOM4;
+  ECMA.Promise, W3C.DOM4;
 
 type
   JBatteryManager = class external 'BatteryManager' (JEventTarget)
@@ -18,7 +18,17 @@ type
     onlevelchange: TEventHandler;
   end;
 
+  TOnFulFilledBatteryManager = procedure(response: JBatteryManager);
+
+  JPromiseBatteryManager = class external 'Promise' (JPromise)
+  public
+    class function resolve(value: JBatteryManager): JPromiseBatteryManager;
+
+    function &then(onFulfilled: TOnFulFilledBatteryManager): JPromiseBatteryManager; overload;
+    function &then(onFulfilled: TOnFulFilledBatteryManager; onRejected: TOnRejected): JPromiseBatteryManager; overload;
+  end;
+
   JNavigator = partial class external 'Navigator'
   public
-    function getBattery: JBatteryManager;
+    function getBattery: JPromiseBatteryManager;
   end;

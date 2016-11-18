@@ -3,7 +3,7 @@ unit W3C.InputMethodEditorAPI;
 interface
 
 uses
-  W3C.DOM4, W3C.Html5, W3C.Geometry;
+  W3C.DOM4, W3C.HTML5, W3C.Geometry;
 
 type
   JInputMethodContext = class external 'InputMethodContext' (JEventTarget)

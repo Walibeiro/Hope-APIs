@@ -6,60 +6,40 @@ uses
   W3C.DOM4;
 
 type
-  // Constructor( DOMString type , optional DeviceOrientationEventInit eventInitDict)
-  JDeviceOrientationEvent = class external 'DeviceOrientationEvent' (JEvent)
+  JDeviceOrientationEventInit = class external 'DeviceOrientationEventInit' (JEventInit)
   public
-    alpha: Float;
-    beta: Float;
-    gamma: Float;
+    alpha, beta, gamma: Float;
     absolute: Boolean;
   end;
 
-  JDeviceOrientationEventInit = class external 'DeviceOrientationEventInit' (JEventInit)
+  JDeviceOrientationEvent = class external 'DeviceOrientationEvent' (JEvent)
   public
-    alpha: Float;
-    beta: Float;
-    gamma: Float;
+    alpha, beta, gamma: Float;
     absolute: Boolean;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JDeviceOrientationEventInit); overload;
   end;
 
   // NoInterfaceObject
   JDeviceAcceleration = class external 'DeviceAcceleration'
   public
-    x: Float;
-    y: Float;
-    z: Float;
+    x, y, z: Float;
   end;
 
   // NoInterfaceObject
   JDeviceRotationRate = class external 'DeviceRotationRate'
   public
-    alpha: Float;
-    beta: Float;
-    gamma: Float;
-  end;
-
-  // Constructor( DOMString type , optional DeviceMotionEventInit eventInitDict)
-  JDeviceMotionEvent = class external 'DeviceMotionEvent' (JEvent)
-  public
-    acceleration: JDeviceAcceleration;
-    accelerationIncludingGravity: JDeviceAcceleration;
-    rotationRate: JDeviceRotationRate;
-    interval: Float;
+    alpha, beta, gamma: Float;
   end;
 
   JDeviceAccelerationInit = class external 'DeviceAccelerationInit'
   public
-    x: Float;
-    y: Float;
-    z: Float;
+    x, y, z: Float;
   end;
 
   JDeviceRotationRateInit = class external 'DeviceRotationRateInit'
   public
-    alpha: Float;
-    beta: Float;
-    gamma: Float;
+    alpha, beta, gamma: Float;
   end;
 
   JDeviceMotionEventInit = class external 'DeviceMotionEventInit' (JEventInit)
@@ -68,6 +48,16 @@ type
     accelerationIncludingGravity: JDeviceAccelerationInit;
     rotationRate: JDeviceRotationRateInit;
     interval: Float;
+  end;
+
+  JDeviceMotionEvent = class external 'DeviceMotionEvent' (JEvent)
+  public
+    acceleration: JDeviceAcceleration;
+    accelerationIncludingGravity: JDeviceAcceleration;
+    rotationRate: JDeviceRotationRate;
+    interval: Float;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JDeviceMotionEventInit); overload;
   end;
 
   JWindow = partial class external 'Window'

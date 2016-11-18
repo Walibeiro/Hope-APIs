@@ -461,5 +461,3 @@ type
     function createTreeWalker(root: JNode; whatToShow: Integer = $FFFFFFFF): JTreeWalker; overload; { NewObject }
     function createTreeWalker(root: JNode; whatToShow: Integer; filter: JNodeFilter): JTreeWalker; overload; { NewObject }
   end;
-
-  JWindow = partial class external 'Window' (JEventTarget);

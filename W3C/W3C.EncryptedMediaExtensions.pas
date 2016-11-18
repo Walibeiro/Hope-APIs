@@ -123,17 +123,18 @@ type
     procedure setMediaKeys(mediaKeys: JMediaKeys);
   end;
 
-  // Constructor( DOMString type , optional MediaEncryptedEventInit eventInitDict)
-  JMediaEncryptedEvent = class external 'MediaEncryptedEvent' (JEvent)
+  JMediaEncryptedEventInit = class external 'MediaEncryptedEventInit' (JEventInit)
   public
     initDataType: String;
     initData: JArrayBuffer;
   end;
 
-  JMediaEncryptedEventInit = class external 'MediaEncryptedEventInit' (JEventInit)
+  JMediaEncryptedEvent = class external 'MediaEncryptedEvent' (JEvent)
   public
     initDataType: String;
     initData: JArrayBuffer;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JMediaEncryptedEventInit); overload;
   end;
 
   JNavigator = partial class external 'Navigator'

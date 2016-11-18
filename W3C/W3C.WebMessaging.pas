@@ -3,7 +3,7 @@ unit W3C.WebMessaging;
 interface
 
 uses
-  ECMA.TypedArray, W3C.DOM4, W3C.Html5;
+  ECMA.TypedArray, W3C.DOM4, W3C.HTML5;
 
 type
   // Exposed = (Window, Worker)

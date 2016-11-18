@@ -6,6 +6,8 @@ uses
   W3C.DOM4;
 
 type
+  JWindow = partial class external 'Window' (JEventTarget);
+
   JUIEventInit = class external 'UIEventInit' (JEventInit)
   public
     view: JWindow;
