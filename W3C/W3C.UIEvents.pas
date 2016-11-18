@@ -47,7 +47,7 @@ type
     modifierSymbolLock: Boolean;
   end;
 
-  JMouseEventInit = class external 'MouseEventInit' (JEventModifierInit)
+  JMouseEventInit = partial class external 'MouseEventInit' (JEventModifierInit)
   public
     screenX, screenY: Integer;
     clientX, clientY: Integer;
@@ -56,7 +56,7 @@ type
     relatedTarget: JEventTarget;
   end;
 
-  JMouseEvent = class external 'MouseEvent' (JUIEvent)
+  JMouseEvent = partial class external 'MouseEvent' (JUIEvent)
   public
     screenX, screenY: Integer;
     clientX, clientY: Integer;

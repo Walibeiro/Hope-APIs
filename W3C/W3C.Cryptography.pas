@@ -37,7 +37,7 @@ type
     const UnwrapKey = 'UnwrapKey';
   end;
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext, Exposed = (Window, Worker)
   JCryptoKey = class external 'CryptoKey'
   public
     &type: JKeyType;
@@ -83,7 +83,7 @@ type
     k: String;
   end;
 
-  // SecureContext,Exposed=( Window , Worker)
+  // SecureContext, Exposed = (Window, Worker)
   JSubtleCrypto = class external 'SubtleCrypto'
   public
     function encrypt(algorithm: TAlgorithmIdentifier; key: JCryptoKey; data: JArrayBufferView): Variant; overload;
@@ -267,14 +267,14 @@ type
     hash: THashAlgorithmIdentifier;
   end;
 
-  // Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JCrypto = class external 'Crypto'
   public
     subtle: JSubtleCrypto; { SecureContext }
     function getRandomValues(&array: JArrayBufferView): JArrayBufferView;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JGlobalCrypto = class external 'GlobalCrypto'
   public
     crypto: JCrypto;

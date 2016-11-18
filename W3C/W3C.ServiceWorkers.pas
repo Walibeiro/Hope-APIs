@@ -29,7 +29,7 @@ type
 
   // SecureContext
 	// Exposed = (Window, Worker)
-  JServiceWorkerRegistration = class external 'ServiceWorkerRegistration' (JEventTarget)
+  JServiceWorkerRegistration = partial class external 'ServiceWorkerRegistration' (JEventTarget)
   public
     installing: JServiceWorker;
     waiting: JServiceWorker;
@@ -119,7 +119,7 @@ type
     &type: JClientType;
   end;
 
-  // Exposed=ServiceWorker
+  // Exposed = ServiceWorker
   JWindowClient = class external 'WindowClient' (JClient)
   public
     visibilityState: JVisibilityState;
@@ -128,7 +128,7 @@ type
     function navigate(url: String): JWindowClient; { NewObject }
   end;
 
-  // Exposed=ServiceWorker
+  // Exposed = ServiceWorker
   JClients = class external 'Clients'
   public
     function get(id: String): Variant; { NewObject }
@@ -138,8 +138,8 @@ type
     procedure claim; { NewObject }
   end;
 
-  // Global=( Worker , ServiceWorker),Exposed=ServiceWorker
-  JServiceWorkerGlobalScope = class external 'ServiceWorkerGlobalScope' (JWorkerGlobalScope)
+  // Global = (Worker, ServiceWorker), Exposed = ServiceWorker
+  JServiceWorkerGlobalScope = partial class external 'ServiceWorkerGlobalScope' (JWorkerGlobalScope)
   public
     clients: JClients; { SameObject } 
     registration: JServiceWorkerRegistration; { SameObject } 
@@ -185,7 +185,10 @@ type
     data: Variant;
     origin: String;
     lastEventId: String;
-// TODO    source: Variant; { SameObject }
+    source: Variant; { SameObject }
+    sourceAsMessagePort: JMessagePort; external 'source';
+    sourceAsServiceWorker: JServiceWorker; external 'source';
+    sourceAsClient: JClient; external 'source';
     ports: array of JMessagePort;
   end;
 
@@ -195,7 +198,9 @@ type
     data: Variant;
     origin: String;
     lastEventId: String;
-// TODO    source: Variant; { SameObject }
+    sourceAsMessagePort: JMessagePort; external 'source';
+    sourceAsServiceWorker: JServiceWorker; external 'source';
+    sourceAsClient: JClient; external 'source';
 //  readonly attribute FrozenArray<MessagePort>? ports;
     constructor Create(&type: String; eventInitDict: JExtendableMessageEventInit);
   end;
@@ -258,13 +263,10 @@ type
     function keys: array of String; { NewObject }
   end;
 
-(*
-  // TODO
   JWorkerNavigator = partial class external 'WorkerNavigator'
   public
     serviceWorker: JServiceWorkerContainer; { SecureContext,SameObject }
   end;
-*)
 
   JNavigator = partial class external 'Navigator'
   public

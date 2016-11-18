@@ -303,7 +303,6 @@ type
     media: String;
   end;
 
-  // NamedConstructor=Image( optional unsigned long width , optional unsigned long height)
   JHTMLImageElement = class external 'HTMLImageElement' (JHTMLElement)
   public
     alt: String;
@@ -326,6 +325,9 @@ type
     hspace: Integer;
     vspace: Integer;
     border: String; { TreatNullAs=EmptyString }
+    constructor Image; overload; external 'Image';
+    constructor Image(width: Integer); overload; external 'Image';
+    constructor Image(width, height: Integer); overload; external 'Image';
   end;
 
   JWindowProxy = JWindow;
@@ -510,8 +512,11 @@ type
     poster: String;
   end;
 
-  // NamedConstructor=Audio( optional DOMString src)
-  JHTMLAudioElement = class external 'HTMLAudioElement' (JHTMLMediaElement);
+  JHTMLAudioElement = class external 'HTMLAudioElement' (JHTMLMediaElement)
+  public
+    constructor Audio; overload; external 'Audio';
+    constructor Audio(src: String); overload; external 'Audio';
+  end;
 
   JHTMLSourceElement = partial class external 'HTMLSourceElement' (JHTMLElement)
   public
@@ -1003,7 +1008,6 @@ type
     label: String;
   end;
 
-  // NamedConstructor=Option( optional DOMString text , optional DOMString value , optional boolean defaultSelected = false , optional boolean selected = false)
   JHTMLOptionElement = partial class external 'HTMLOptionElement' (JHTMLElement)
   public
     disabled: Boolean;
@@ -1014,6 +1018,11 @@ type
     value: String;
     text: String;
     index: Integer;
+    constructor Option; overload; external 'Option';
+    constructor Option(text: String); overload; external 'Option';
+    constructor Option(text, value: String); overload; external 'Option';
+    constructor Option(text, value: String; defaultSelected: Boolean); overload; external 'Option';
+    constructor Option(text, value: String; defaultSelected, selected: Boolean); overload; external 'Option';
   end;
 
   JHTMLTextAreaElement = class external 'HTMLTextAreaElement' (JHTMLElement)
@@ -1431,8 +1440,6 @@ type
 
   TTimerHandler = Variant;
 
-  TImageBitmapSource = Variant; //ToDo
-
   // Exposed = (Window, Worker)
   JImageBitmap = class external 'ImageBitmap'
   public
@@ -1454,8 +1461,10 @@ type
     function setInterval(handler: TTimerHandler; timeout: Integer): Integer; overload;
     function setInterval(handler: TTimerHandler; timeout: Integer; arguments: Variant): Integer; overload;
     procedure clearInterval(handle: Integer = 0);
-    function createImageBitmap(image: TImageBitmapSource): JImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; sx: Integer; sy: Integer; sw: Integer; sh: Integer): JImageBitmap; overload;
+    function createImageBitmap(image: Variant): JImageBitmap; overload;
+    function createImageBitmap(image: JBlob): JImageBitmap; overload;
+    function createImageBitmap(image: Variant; sx, sy, sw, sh: Integer): JImageBitmap; overload;
+    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JImageBitmap; overload;
   end;
 
   // NoInterfaceObject
@@ -1465,7 +1474,7 @@ type
     returnValue: Variant;
   end;
 
-  JNavigator = class external 'Navigator'
+  JNavigator = partial class external 'Navigator'
   end;
 
   // NoInterfaceObject

@@ -4,7 +4,7 @@ interface
 
 uses
   ECMA.TypedArray, WHATWG.DOM, W3C.FileAPI, W3C.UIEvents,
-  W3C.HighResolutionTime;
+  W3C.HighResolutionTime, W3C.Geometry;
 
 type
   // LegacyUnenumerableNamedProperties
@@ -699,13 +699,14 @@ type
     trackAsTextTrack: JTextTrack; external 'track';
   end;
 
-  // Constructor( DOMString type , optional TrackEventInit eventInitDict)
   JTrackEvent = class external 'TrackEvent' (JEvent)
   public
     track: Variant;
     trackAsAudioTrack: JAudioTrack; external 'track';
     trackAsVideoTrack: JVideoTrack; external 'track';
     trackAsTextTrack: JTextTrack; external 'track';
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JTrackEventInit); overload;
   end;
 
   JHTMLMediaElement = partial class external 'HTMLMediaElement' (JHTMLElement)
@@ -1153,15 +1154,16 @@ type
     default: Boolean; { CEReactions }
   end;
 
-  // Constructor( DOMString type , optional RelatedEventInit eventInitDict)
-  JRelatedEvent = class external 'RelatedEvent' (JEvent)
+  JRelatedEventInit = class external 'RelatedEventInit' (JEventInit)
   public
     relatedTarget: JEventTarget;
   end;
 
-  JRelatedEventInit = class external 'RelatedEventInit' (JEventInit)
+  JRelatedEvent = class external 'RelatedEvent' (JEvent)
   public
     relatedTarget: JEventTarget;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JRelatedEventInit); overload;
   end;
 
   // HTMLConstructor
@@ -1235,14 +1237,23 @@ type
     procedure toBlob(_callback: TBlobCallback; &type: String; quality: Variant); overload;
   end;
 
-  JCanvasFillRule = (cfrNonzero, cfrEvenodd);
+  JCanvasFillRule = String;
+  JCanvasFillRuleHelper = strict helper for JCanvasFillRule
+   const NonZero = 'nonzero';
+   const EvenOdd = 'evenodd';
+  end;
 
   JCanvasRenderingContext2DSettings = class external 'CanvasRenderingContext2DSettings'
   public
     alpha: Boolean;
   end;
 
-  JImageSmoothingQuality = (isqLow, isqMedium, isqHigh);
+  JImageSmoothingQuality = String;
+  JImageSmoothingQualityHelper = strict helper for JImageSmoothingQuality
+    const Lo = 'Low';
+    const Medium = 'Medium';
+    const Hi = 'High';
+  end;
 
   JCanvasRenderingContext2D = class external 'CanvasRenderingContext2D'
   public
@@ -1263,7 +1274,7 @@ type
     procedure rotate(angle: Float);
     procedure translate(x: Float; y: Float);
     procedure transform(a: Float; b: Float; c: Float; d: Float; e: Float; f: Float);
-// TODO    function getTransform: JDOMMatrix; { NewObject }
+    function getTransform: JDOMMatrix; { NewObject }
     procedure setTransform(a: Float; b: Float; c: Float; d: Float; e: Float; f: Float);
     procedure setTransform; overload;
 // TODO    procedure setTransform(transform: JDOMMatrixInit); overload;
@@ -1328,11 +1339,16 @@ type
     procedure strokeRect(x: Float; y: Float; w: Float; h: Float);
   end;
 
-  // Constructor,Constructor( Path2D path),Constructor( sequence < Path2D > paths , optional CanvasFillRule fillRule = nonzero),Constructor( DOMString d),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JPath2D = class external 'Path2D'
   public
     procedure addPath(path: JPath2D); overload;
 // TODO    procedure addPath(path: JPath2D; transform: JDOMMatrixInit); overload;
+    constructor Create; overload;
+    constructor Create(path: JPath2D); overload;
+    constructor Create(paths: array of JPath2D); overload;
+    constructor Create(paths: array of JPath2D; fillRule: JCanvasFillRule); overload;
+    constructor Create(d: String); overload;
   end;
 
   // NoInterfaceObject
@@ -1439,12 +1455,15 @@ type
     procedure drawImage(image: TCanvasImageSource; sx, sy, sw, sh, dx, dy, dw, dh: Float); overload;
   end;
 
-  // Constructor( unsigned long sw , unsigned long sh),Constructor( Uint8ClampedArray data , unsigned long sw , optional unsigned long sh),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JImageData = class external 'ImageData'
   public
     width: Integer;
     height: Integer;
     data: JUint8ClampedArray;
+    constructor Create(sw, sh: Integer); overload;
+    constructor Create(data: JUint8ClampedArray; sw: Integer); overload;
+    constructor Create(data: JUint8ClampedArray; sw, sh: Integer); overload;
   end;
 
   // NoInterfaceObject
@@ -1479,7 +1498,7 @@ type
     direction: JCanvasDirection;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JCanvasPath = class external 'CanvasPath'
   public
     procedure closePath;
@@ -1571,15 +1590,16 @@ type
     procedure clearData(format: String); overload;
   end;
 
-  // Constructor( DOMString type , optional DragEventInit eventInitDict)
-  JDragEvent = class external 'DragEvent' (JMouseEvent)
+  JDragEventInit = class external 'DragEventInit' (JMouseEventInit)
   public
     dataTransfer: JDataTransfer;
   end;
 
-  JDragEventInit = class external 'DragEventInit' (JMouseEventInit)
+  JDragEvent = class external 'DragEvent' (JMouseEvent)
   public
     dataTransfer: JDataTransfer;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JDragEventInit); overload;
   end;
 
   JLocation = class external 'Location'
@@ -1622,25 +1642,19 @@ type
     visible: Boolean;
   end;
 
-  // Constructor( DOMString type , optional PopStateEventInit eventInitDict)
-  JPopStateEvent = class external 'PopStateEvent' (JEvent)
-  public
-    state: Variant;
-  end;
-
   JPopStateEventInit = class external 'PopStateEventInit' (JEventInit)
   public
     state: Variant;
   end;
 
-  JFrameRequestCallback = procedure(time: TDOMHighResTimeStamp);
-
-  // Constructor( DOMString type , optional HashChangeEventInit eventInitDict)
-  JHashChangeEvent = class external 'HashChangeEvent' (JEvent)
+  JPopStateEvent = class external 'PopStateEvent' (JEvent)
   public
-    oldURL: String;
-    newURL: String;
+    state: Variant;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JPopStateEventInit); overload;
   end;
+
+  JFrameRequestCallback = procedure(time: TDOMHighResTimeStamp);
 
   JHashChangeEventInit = class external 'HashChangeEventInit' (JEventInit)
   public
@@ -1648,10 +1662,12 @@ type
     newURL: String;
   end;
 
-  // Constructor( DOMString type , optional PageTransitionEventInit eventInitDict)
-  JPageTransitionEvent = class external 'PageTransitionEvent' (JEvent)
+  JHashChangeEvent = class external 'HashChangeEvent' (JEvent)
   public
-    persisted: Boolean;
+    oldURL: String;
+    newURL: String;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JHashChangeEventInit); overload;
   end;
 
   JPageTransitionEventInit = class external 'PageTransitionEventInit' (JEventInit)
@@ -1659,13 +1675,20 @@ type
     persisted: Boolean;
   end;
 
+  JPageTransitionEvent = class external 'PageTransitionEvent' (JEvent)
+  public
+    persisted: Boolean;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JPageTransitionEventInit); overload;
+  end;
+
   JBeforeUnloadEvent = class external 'BeforeUnloadEvent' (JEvent)
   public
     returnValue: String;
   end;
 
-  // Exposed=( Window , SharedWorker)
-  JApplicationCache = class external 'ApplicationCache' (JEventTarget)
+  // Exposed = (Window, SharedWorker)
+  JApplicationCache = partial class external 'ApplicationCache' (JEventTarget)
   const
     UNCACHED: Integer = 0;
     IDLE: Integer = 1;
@@ -1688,20 +1711,10 @@ type
     procedure swapCache;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JNavigatorOnLine = class external 'NavigatorOnLine'
   public
     onLine: Boolean;
-  end;
-
-  // Constructor( DOMString type , optional ErrorEventInit eventInitDict),Exposed=( Window , Worker)
-  JErrorEvent = class external 'ErrorEvent' (JEvent)
-  public
-    message: String;
-    filename: String;
-    lineno: Integer;
-    colno: Integer;
-    error: Variant;
   end;
 
   JErrorEventInit = class external 'ErrorEventInit' (JEventInit)
@@ -1713,17 +1726,30 @@ type
     error: Variant;
   end;
 
-  // Constructor( DOMString type , PromiseRejectionEventInit eventInitDict),Exposed=( Window , Worker)
-  JPromiseRejectionEvent = class external 'PromiseRejectionEvent' (JEvent)
+  // Exposed = (Window, Worker)
+  JErrorEvent = class external 'ErrorEvent' (JEvent)
   public
-    promise: Variant;
-    reason: Variant;
+    message: String;
+    filename: String;
+    lineno: Integer;
+    colno: Integer;
+    error: Variant;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JErrorEventInit); overload;
   end;
 
   JPromiseRejectionEventInit = class external 'PromiseRejectionEventInit' (JEventInit)
   public
     promise: Variant;
     reason: Variant;
+  end;
+
+  // Exposed = (Window, Worker)
+  JPromiseRejectionEvent = class external 'PromiseRejectionEvent' (JEvent)
+  public
+    promise: Variant;
+    reason: Variant;
+    constructor Create(&type: String; eventInitDict: JPromiseRejectionEventInit);
   end;
 
   // NoInterfaceObject
@@ -1821,7 +1847,6 @@ type
   end;
 
   TTimerHandler = Variant;  // TODO
-  TImageBitmapSource = Variant;  // TODO
 
   JImageOrientation = String;
   JImageOrientationHelper = strict helper for JImageOrientation
@@ -1861,7 +1886,7 @@ type
     resizeQuality: JResizeQuality;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JWindowOrWorkerGlobalScope = partial class external 'WindowOrWorkerGlobalScope'
   public
     origin: String; { Replaceable }
@@ -1873,16 +1898,24 @@ type
     function setInterval(handler: TTimerHandler; timeout: Integer = 0): Integer; overload;
     function setInterval(handler: TTimerHandler; timeout: Integer; arguments: Variant): Integer; overload;
     procedure clearInterval(handle: Integer = 0);
-    function createImageBitmap(image: TImageBitmapSource): JImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; options: JImageBitmapOptions): JImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; sx, sy, sw, sh: Integer): JImageBitmap; overload;
-    function createImageBitmap(image: TImageBitmapSource; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: TCanvasImageSource): JImageBitmap; overload;
+    function createImageBitmap(image: JImageData): JImageBitmap; overload;
+    function createImageBitmap(image: JBlob): JImageBitmap; overload;
+    function createImageBitmap(image: TCanvasImageSource; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: JImageData; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: JBlob; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: TCanvasImageSource; sx, sy, sw, sh: Integer): JImageBitmap; overload;
+    function createImageBitmap(image: JImageData; sx, sy, sw, sh: Integer): JImageBitmap; overload;
+    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JImageBitmap; overload;
+    function createImageBitmap(image: TCanvasImageSource; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: JImageData; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
+    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
   end;
 
   JNavigator = class external 'Navigator'
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JNavigatorID = class external 'NavigatorID'
   public
     appCodeName: String;
@@ -1898,7 +1931,7 @@ type
     function taintEnabled: Boolean; { Exposed=Window }
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JNavigatorLanguage = class external 'NavigatorLanguage'
   public
     language: String;
@@ -1988,18 +2021,6 @@ type
     procedure close;
   end;
 
-  // Constructor( DOMString type , optional MessageEventInit eventInitDict),Exposed=( Window , Worker)
-  JMessageEvent = class external 'MessageEvent' (JEvent)
-  public
-    data: Variant;
-    origin: String;
-    lastEventId: String;
-    source: TMessageEventSource;
-    procedure initMessageEvent(&type: String; bubbles, cancelable: Boolean;
-      data: Variant; origin: String; lastEventId: String;
-      source: TMessageEventSource; ports: array of JMessagePort);
-  end;
-
   JMessageEventInit = class external 'MessageEventInit' (JEventInit)
   public
     data: Variant;
@@ -2009,7 +2030,26 @@ type
     ports: array of JMessagePort;
   end;
 
-  // Constructor( USVString url , optional EventSourceInit eventSourceInitDict),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
+  JMessageEvent = class external 'MessageEvent' (JEvent)
+  public
+    data: Variant;
+    origin: String;
+    lastEventId: String;
+    source: TMessageEventSource;
+    procedure initMessageEvent(&type: String; bubbles, cancelable: Boolean;
+      data: Variant; origin: String; lastEventId: String;
+      source: TMessageEventSource; ports: array of JMessagePort);
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JMessageEventInit); overload;
+  end;
+
+  JEventSourceInit = class external 'EventSourceInit'
+  public
+    withCredentials: Boolean;
+  end;
+
+  // Exposed = (Window, Worker)
   JEventSource = class external 'EventSource' (JEventTarget)
   const
     CONNECTING: Integer = 0;
@@ -2022,12 +2062,9 @@ type
     onopen: TEventHandler;
     onmessage: TEventHandler;
     onerror: TEventHandler;
+    constructor Create(url: String); overload;
+    constructor Create(url: String; eventSourceInitDict: JEventSourceInit); overload;
     procedure close;
-  end;
-
-  JEventSourceInit = class external 'EventSourceInit'
-  public
-    withCredentials: Boolean;
   end;
 
   JBinaryType = String;
@@ -2036,7 +2073,7 @@ type
     const ArrayBuffer = 'arraybuffer';
   end;
 
-  // Constructor( USVString url , optional( DOMString or sequence < DOMString >)protocols=[]),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JWebSocket = class external 'WebSocket' (JEventTarget)
   const
     CONNECTING: Integer = 0;
@@ -2054,6 +2091,9 @@ type
     protocol: String;
     onmessage: TEventHandler;
     binaryType: JBinaryType;
+    constructor Create(url: String); overload;
+    constructor Create(url: String; protocol: String); overload;
+    constructor Create(url: String; protocols: array of String); overload;
     procedure close; overload;
     procedure close(code: Integer { Clamp } ); overload;
     procedure close(code: Integer { Clamp } ; reason: String); overload;
@@ -2063,14 +2103,6 @@ type
     procedure send(data: JArrayBufferView); overload;
   end;
 
-  // Constructor( DOMString type , optional CloseEventInit eventInitDict),Exposed=( Window , Worker)
-  JCloseEvent = class external 'CloseEvent' (JEvent)
-  public
-    wasClean: Boolean;
-    code: Integer;
-    reason: String;
-  end;
-
   JCloseEventInit = class external 'CloseEventInit' (JEventInit)
   public
     wasClean: Boolean;
@@ -2078,20 +2110,32 @@ type
     reason: String;
   end;
 
-  // Constructor,Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
+  JCloseEvent = class external 'CloseEvent' (JEvent)
+  public
+    wasClean: Boolean;
+    code: Integer;
+    reason: String;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JCloseEventInit); overload;
+  end;
+
+  // Exposed = (Window, Worker)
   JMessageChannel = class external 'MessageChannel'
   public
     port1: JMessagePort;
     port2: JMessagePort;
+    constructor Create;
   end;
 
-  // Constructor( DOMString name),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
   JBroadcastChannel = class external 'BroadcastChannel' (JEventTarget)
   public
     name: String;
     onmessage: TEventHandler;
     procedure postMessage(message: Variant);
     procedure close;
+    constructor Create(name: String);
   end;
 
   // Exposed=Worker
@@ -2143,18 +2187,10 @@ type
     procedure close;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JAbstractWorker = class external 'AbstractWorker'
   public
     onerror: TEventHandler;
-  end;
-
-  // Constructor( USVString scriptURL , optional WorkerOptions options),Exposed=( Window , Worker)
-  JWorker = class external 'Worker' (JEventTarget)
-  public
-    onmessage: TEventHandler;
-    procedure terminate;
-    procedure postMessage(message: Variant; transfer: Variant); // TODO
   end;
 
   JWorkerType = String;
@@ -2169,13 +2205,26 @@ type
 // TODO    credentials: JRequestCredentials;
   end;
 
-  // Constructor( USVString scriptURL , optional DOMString name , optional WorkerOptions options),Exposed=( Window , Worker)
+  // Exposed = (Window, Worker)
+  JWorker = class external 'Worker' (JEventTarget)
+  public
+    onmessage: TEventHandler;
+    procedure terminate;
+    procedure postMessage(message: Variant; transfer: Variant); // TODO
+    constructor Create(scriptURL: String); overload;
+    constructor Create(scriptURL: String; options: JWorkerOptions); overload;
+  end;
+
+  // Exposed = (Window, Worker)
   JSharedWorker = class external 'SharedWorker' (JEventTarget)
   public
     port: JMessagePort;
+    constructor Create(scriptURL: String); overload;
+    constructor Create(scriptURL, name: String); overload;
+    constructor Create(scriptURL, name: String; options: JWorkerOptions); overload;
   end;
 
-  // NoInterfaceObject,Exposed=( Window , Worker)
+  // NoInterfaceObject, Exposed = (Window, Worker)
   JNavigatorConcurrentHardware = class external 'NavigatorConcurrentHardware'
   public
     hardwareConcurrency: Integer;
@@ -2203,8 +2252,7 @@ type
     localStorage: JStorage;
   end;
 
-  // Constructor( DOMString type , optional StorageEventInit eventInitDict)
-  JStorageEvent = class external 'StorageEvent' (JEvent)
+  JStorageEventInit = class external 'StorageEventInit' (JEventInit)
   public
     key: String;
     oldValue: String;
@@ -2213,13 +2261,15 @@ type
     storageArea: JStorage;
   end;
 
-  JStorageEventInit = class external 'StorageEventInit' (JEventInit)
+  JStorageEvent = class external 'StorageEvent' (JEvent)
   public
     key: String;
     oldValue: String;
     newValue: String;
     url: String;
     storageArea: JStorage;
+    constructor Create(&type: String); overload;
+    constructor Create(&type: String; eventInitDict: JStorageEventInit); overload;
   end;
 
   JHTMLAppletElement = class external 'HTMLAppletElement' (JHTMLElement)

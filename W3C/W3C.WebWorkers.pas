@@ -7,15 +7,13 @@ uses
 
 type
   // Exposed = Worker
-  JWorkerNavigator = class external 'WorkerNavigator'
-  end;
+  JWorkerNavigator = partial class external 'WorkerNavigator';
 
   // Exposed = Worker
-  JWorkerLocation = class external 'WorkerLocation'
-  end;
+  JWorkerLocation = class external 'WorkerLocation';
 
   // Exposed = Worker
-  JWorkerGlobalScope = class external 'WorkerGlobalScope' (JEventTarget)
+  JWorkerGlobalScope = partial class external 'WorkerGlobalScope' (JEventTarget)
   public
     self: JWorkerGlobalScope;
     location: JWorkerLocation;
@@ -37,11 +35,34 @@ type
     procedure postMessage(message: Variant; transfer: array of JMessagePort); overload;
   end;
 
+  JApplicationCache = partial class external 'ApplicationCache' (JEventTarget)
+  const
+    UNCACHED: Integer = 0;
+    IDLE: Integer = 1;
+    CHECKING: Integer = 2;
+    DOWNLOADING: Integer = 3;
+    UPDATEREADY: Integer = 4;
+    OBSOLETE: Integer = 5;
+  public
+    status: Integer;
+    onchecking: TEventHandler;
+    onerror: TEventHandler;
+    onnoupdate: TEventHandler;
+    ondownloading: TEventHandler;
+    onprogress: TEventHandler;
+    onupdateready: TEventHandler;
+    oncached: TEventHandler;
+    onobsolete: TEventHandler;
+    procedure update;
+    procedure abort;
+    procedure swapCache;
+  end;
+
   // Global = (Worker, SharedWorker), Exposed = SharedWorker
   JSharedWorkerGlobalScope = class external 'SharedWorkerGlobalScope' (JWorkerGlobalScope)
   public
     name: String;
-// TODO    applicationCache: JApplicationCache;
+    applicationCache: JApplicationCache;
     onconnect: TEventHandler;
   end;
 

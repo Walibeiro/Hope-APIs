@@ -6,10 +6,41 @@ uses
   W3C.DOM4;
 
 type
-  TConstrainLong = Variant; // TODO
-  TConstrainDouble = Variant; // TODO
-  TConstrainBoolean = Variant; // TODO
-  TConstrainDOMString = Variant; // TODO
+  JFloatRange = class external 'FloatRange'
+  public
+    max: Float;
+    min: Float;
+  end;
+
+  JConstrainFloatRange = class external 'ConstrainFloatRange' (JFloatRange)
+  public
+    exact: Float;
+    ideal: Float;
+  end;
+
+  JIntegerRange = class external 'IntegerRange'
+  public
+    max: Integer;
+    min: Integer;
+  end;
+
+  JConstrainIntegerRange = class external 'ConstrainIntegerRange' (JIntegerRange)
+  public
+    exact: Integer;
+    ideal: Integer;
+  end;
+
+  JConstrainBooleanParameters = class external 'ConstrainBooleanParameters'
+  public
+    exact: Boolean;
+    ideal: Boolean;
+  end;
+
+  JConstrainDOMStringParameters = class external 'ConstrainDOMStringParameters'
+  public
+    exact: Variant; // TODO
+    ideal: Variant; // TODO
+  end;
 
   JMediaStreamTrackState = String;
   JMediaStreamTrackStateHelper = strict helper for JMediaStreamTrackState
@@ -29,36 +60,80 @@ type
 
   JMediaTrackCapabilities = class external 'MediaTrackCapabilities'
   public
-    width: Variant; // TODO
-    height: Variant; // TODO
-    aspectRatio: Variant; // TODO
-    frameRate: Variant; // TODO
+    width: Variant;
+    widthAsInteger: Integer; external 'width';
+    widthAsIntegerRange: JIntegerRange; external 'width';
+    height: Variant;
+    heightAsInteger: Variant; external '';
+    heightAsIntegerRange: Variant; external '';
+    aspectRatio: Variant;
+    aspectRatioAsFloat: Float; external 'aspectRatio';
+    aspectRatioAsFloatRange: JFloatRange; external 'aspectRatio';
+    frameRate: Variant;
+    frameRateAsFloat: Float; external 'frameRate';
+    frameRateAsFloatRange: JFloatRange; external 'frameRate';
     facingMode: array of String;
-    volume: Variant; // TODO
-    sampleRate: Variant; // TODO
-    sampleSize: Variant; // TODO
+    volume: Variant;
+    volumeAsFloat: Float; external 'volume';
+    volumeAsFloatRange: JFloatRange; external 'volume';
+    sampleRate: Variant;
+    sampleRateAsInteger: Integer; external 'sampleRate';
+    sampleRateAsIntegerRange: JIntegerRange; external 'sampleRate';
+    sampleSize: Variant;
+    sampleSizeAsInteger: Integer; external 'sampleSize';
+    sampleSizeAsIntegerRange: JIntegerRange; external 'sampleSize';
     echoCancellation: array of Boolean;
-    latency: Variant; // TODO
-    channelCount: Variant; // TODO
+    latency: Variant;
+    latencyAsFloat: Float; external 'latency';
+    latencyAsFloatRange: JFloatRange; external 'latency';
+    channelCount: Variant;
+    channelCountAsInteger: Integer; external 'channelCount';
+    channelCountAsIntegerRange: JIntegerRange; external 'channelCount';
     deviceId: String;
     groupId: String;
   end;
 
   JMediaTrackConstraintSet = class external 'MediaTrackConstraintSet'
   public
-    width: TConstrainLong;
-    height: TConstrainLong;
-    aspectRatio: TConstrainDouble;
-    frameRate: TConstrainDouble;
-    facingMode: TConstrainDOMString;
-    volume: TConstrainDouble;
-    sampleRate: TConstrainLong;
-    sampleSize: TConstrainLong;
-    echoCancellation: TConstrainBoolean;
-    latency: TConstrainDouble;
-    channelCount: TConstrainLong;
-    deviceId: TConstrainDOMString;
-    groupId: TConstrainDOMString;
+    width: Variant;
+    widthAsInteger: Integer; external 'width';
+    widthAsConstrainIntegerRange: JConstrainIntegerRange; external 'width';
+    height: Variant;
+    heightAsInteger: Integer; external 'height';
+    heightAsConstrainIntegerRange: JConstrainIntegerRange; external 'height';
+    aspectRatio: Variant;
+    aspectRatioAsFloat: Float; external 'aspectRatio';
+    aspectRatioAsConstrainDouble: JConstrainFloatRange; external 'aspectRatio';
+    frameRate: Variant;
+    frameRateAsFloat: Float; external 'frameRate';
+    frameRateAsConstrainDouble: JConstrainFloatRange; external 'frameRate';
+    facingMode: Variant;
+    facingModeAsString: String; external 'facingMode';
+    facingModeAsConstrainDOMString: JConstrainDOMStringParameters; external 'facingMode';
+    volume: Variant;
+    volumeAsFloat: Float; external 'volume';
+    volumeAsConstrainDouble: JConstrainFloatRange; external 'volume';
+    sampleRate: Variant;
+    sampleRateAsInteger: Integer; external 'sampleRate';
+    sampleRateAsConstrainLong: JConstrainIntegerRange; external 'sampleRate';
+    sampleSize: Variant;
+    sampleSizeAsInteger: Integer; external 'sampleSize';
+    sampleSizeAsConstrainLong: JConstrainIntegerRange; external 'sampleSize';
+    echoCancellation: Variant;
+    echoCancellationAsBoolean: Boolean; external 'echoCancellation';
+    echoCancellationAsConstrainBoolean: JConstrainBooleanParameters; external 'echoCancellation';
+    latency: Variant;
+    latencyAsFloat: Float; external 'latency';
+    latencyAsConstrainDouble: JConstrainFloatRange; external 'latency';
+    channelCount: Variant;
+    channelCountAsInteger: Integer; external 'channelCount';
+    channelCountAsConstrainLong: JConstrainIntegerRange; external 'channelCount';
+    deviceId: Variant;
+    deviceIdAsString: String; external 'deviceId';
+    deviceIdAsConstrainDOMString: JConstrainDOMStringParameters; external 'deviceId';
+    groupId: Variant;
+    groupIdAsString: String; external 'groupId';
+    groupIdAsConstrainDOMString: JConstrainDOMStringParameters; external 'groupId';
   end;
 
   JMediaTrackConstraints = class external 'MediaTrackConstraints' (JMediaTrackConstraintSet)
@@ -84,7 +159,7 @@ type
   end;
 
   // Exposed = Window
-  JMediaStreamTrack = class external 'MediaStreamTrack' (JEventTarget)
+  JMediaStreamTrack = partial class external 'MediaStreamTrack' (JEventTarget)
   public
     kind: String;
     id: String;
@@ -105,7 +180,7 @@ type
     procedure applyConstraints(constraints: JMediaTrackConstraints); overload;
   end;
 
-  // Exposed = Window,
+  // Exposed = Window
   JMediaStream = class external 'MediaStream' (JEventTarget)
   public
     id: String;
@@ -153,15 +228,20 @@ type
     constructor Create(&type: String; eventInitDict: JMediaStreamTrackEventInit);
   end;
 
+  JOverconstrainedError = class external 'OverconstrainedError'
+    constraint: Variant;
+    message: String;
+  end;
+
   JOverconstrainedErrorEventInit = class external 'OverconstrainedErrorEventInit' (JEventInit)
   public
-// TODO    error: JOverconstrainedError;
+    error: JOverconstrainedError;
   end;
 
   // Exposed = Window
   JOverconstrainedErrorEvent = class external 'OverconstrainedErrorEvent' (JEvent)
   public
-// TODO    error: JOverconstrainedError;
+    error: JOverconstrainedError;
     constructor Create(&type: String); overload;
     constructor Create(&type: String; eventInitDict: JOverconstrainedErrorEventInit); overload;
   end;
@@ -184,8 +264,12 @@ type
 
   JMediaStreamConstraints = class external 'MediaStreamConstraints'
   public
-    video: Variant; // TODO
-    audio: Variant; // TODO
+    video: Variant;
+    videoAsBoolean: Boolean; external 'video';
+    videoAsMediaTrackConstraints: JMediaTrackConstraints; external 'video';
+    audio: Variant;
+    audioAsBoolean: Boolean; external 'audio';
+    audioAsMediaTrackConstraints: JMediaTrackConstraints; external 'audio';
   end;
 
   // Exposed = Window
@@ -217,42 +301,6 @@ type
   JHTMLIFrameElement = partial class external 'HTMLIFrameElement'
   public
     allowUserMedia: Boolean;
-  end;
-
-  JDoubleRange = class external 'DoubleRange'
-  public
-    max: Float;
-    min: Float;
-  end;
-
-  JConstrainDoubleRange = class external 'ConstrainDoubleRange' (JDoubleRange)
-  public
-    exact: Float;
-    ideal: Float;
-  end;
-
-  JLongRange = class external 'LongRange'
-  public
-    max: Integer;
-    min: Integer;
-  end;
-
-  JConstrainLongRange = class external 'ConstrainLongRange' (JLongRange)
-  public
-    exact: Integer;
-    ideal: Integer;
-  end;
-
-  JConstrainBooleanParameters = class external 'ConstrainBooleanParameters'
-  public
-    exact: Boolean;
-    ideal: Boolean;
-  end;
-
-  JConstrainDOMStringParameters = class external 'ConstrainDOMStringParameters'
-  public
-    exact: Variant; // TODO
-    ideal: Variant; // TODO
   end;
 
   JCapabilities = class external 'Capabilities'

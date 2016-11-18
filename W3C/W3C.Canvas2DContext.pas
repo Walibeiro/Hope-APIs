@@ -3,7 +3,7 @@ unit W3C.Canvas2DContext;
 interface
 
 uses
-  ECMA.TypedArray, W3C.DOM4, W3C.HTML5;
+  ECMA.TypedArray, W3C.DOM4, W3C.HTML5, W3C.UIEvents;
 
 type
   TCanvasImageSource = Variant;  //TODO
@@ -67,7 +67,7 @@ type
     region: String;
   end;
 
-  JMouseEventInit = class external 'MouseEventInit'
+  JMouseEventInit = partial class external 'MouseEventInit'
   public
     region: String;
   end;
