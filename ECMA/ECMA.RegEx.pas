@@ -4,7 +4,7 @@ interface
 
 type
   JRegexFlags = class external 
-    global: Boolean
+    global: Boolean;
     ignoreCase: Boolean;
     multiline: Boolean;
     unicode: Boolean;
@@ -14,7 +14,7 @@ type
   JRegEx = class external 'RegEx'
   public
     flags: JRegexFlags; 
-    global: Boolean
+    global: Boolean;
     ignoreCase: Boolean;
     multiline: Boolean;
     source: String;
@@ -27,9 +27,9 @@ type
     function toSource: String; // non-standard
     function toString: String;
     procedure compile(pattern: String; flags: String);
-    class procedure input: String;
-    class procedure lastMatch: String;
-    class procedure lastParen: String;
-    class procedure leftContext: String;
-    class procedure rightContext: String;
+    class function input: String;
+    class function lastMatch: String;
+    class function lastParen: String;
+    class function leftContext: String;
+    class function rightContext: String;
   end;
