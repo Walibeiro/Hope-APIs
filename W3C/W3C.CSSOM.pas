@@ -439,7 +439,7 @@ type
 
   JElement = partial class external 'Element' (JNode)
   public
-    Style: JCSS2Properties;
+    style: JCSS2Properties;
   end;
 
   JCSSImportRule = class external 'CSSImportRule' (JCSSRule)

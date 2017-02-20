@@ -57,8 +57,6 @@ type
     constructor Create(&type: String; eventInitDict: JMediaQueryListEventInit); overload;
   end;
 
-  JDOMRect = variant;
-
   JCaretPosition = class external 'CaretPosition'
   public
     offsetNode: JNode;

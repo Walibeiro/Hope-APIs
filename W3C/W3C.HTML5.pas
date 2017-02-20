@@ -3,8 +3,7 @@ unit W3C.HTML5;
 interface
 
 uses
-  ECMA.Promise, ECMA.TypedArray, W3C.DOM4,
-  W3C.HighResolutionTime, W3C.UIEvents;
+  ECMA.Promise, ECMA.TypedArray, W3C.DOM4, W3C.HighResolutionTime, W3C.UIEvents;
 
 type
   // OverrideBuiltins
@@ -1256,8 +1255,6 @@ type
     constructor Create(&type: String; eventInitDict: JDragEventInit); overload;
   end;
 
-  JFrameRequestCallback = procedure(time: TDOMHighResTimeStamp);
-
   JBarProp = class external 'BarProp'
   public
     visible: Boolean;
@@ -1726,6 +1723,8 @@ type
     property Items[Name: String]: JObject read GetNamedItem; default;
   end;
 
+  TFrameRequestCallback = procedure(time: TDOMHighResTimeStamp);
+
   // PrimaryGlobal, LegacyUnenumerableNamedProperties
   JWindow = partial class external 'Window' (JEventTarget)
   private
@@ -1769,7 +1768,7 @@ type
     procedure print;
     function showModalDialog(url: String): Variant; overload;
     function showModalDialog(url: String; argument: Variant): Variant; overload;
-    function requestAnimationFrame(Callback: JFrameRequestCallback): Integer;
+    function requestAnimationFrame(Callback: TFrameRequestCallback): Integer;
     procedure cancelAnimationFrame(handle: Integer);
     procedure captureEvents;
     procedure releaseEvents;
