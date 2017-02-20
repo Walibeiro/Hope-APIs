@@ -16,9 +16,14 @@ type
   end;
 
   JTouchList = class external 'TouchList'
+  private
+    function GetItems(index : Integer) : JTouch; external array;
   public
     length: Integer;
+    function identifiedTouch(identifiers: Integer): JTouch;
     function item(&index: Integer): JTouch;
+
+    property Items[index: Integer]: JTouch read GetItems; default;
   end;
 
   JTouchEvent = class external 'TouchEvent' (JUIEvent)

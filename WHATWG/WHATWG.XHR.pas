@@ -3,7 +3,7 @@ unit WHATWG.XHR;
 interface
 
 uses
-  WHATWG.DOM, WHATWG.HTML, W3C.FileAPI;
+  ECMA.TypedArray, WHATWG.DOM, WHATWG.HTML, W3C.FileAPI;
 
 type
   // Exposed = (Window, DedicatedWorker, SharedWorker)
@@ -57,7 +57,13 @@ type
     procedure open(&method: String; url: String; async: Boolean; username: String); overload;
     procedure open(&method: String; url: String; async: Boolean; username, password: String); overload;
     procedure setRequestHeader(&name, value: String);
-// TODO    procedure send(body: Union = );
+    procedure send; overload;
+    procedure send(body: JDocument); overload;
+    procedure send(body: String); overload;
+    procedure send(body: JBlob); overload;
+    procedure send(body: JArrayBufferView); overload;
+    procedure send(body: JArrayBuffer); overload;
+//    procedure send(body: JReadableStream); overload;
     procedure abort;
     function getResponseHeader(&name: String): String;
     function getAllResponseHeaders: String;

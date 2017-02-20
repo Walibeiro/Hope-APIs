@@ -3,7 +3,7 @@ unit WHATWG.Html;
 interface
 
 uses
-  ECMA.TypedArray, WHATWG.DOM, W3C.FileAPI, W3C.UIEvents,
+  ECMA.TypedArray, WHATWG.DOM, W3C.UIEvents,
   W3C.HighResolutionTime, W3C.Geometry;
 
 type
@@ -874,7 +874,6 @@ type
     dirName: String; { CEReactions }
     disabled: Boolean; { CEReactions }
     form: JHTMLFormElement;
-    files: JFileList;
     formAction: String; { CEReactions }
     formEnctype: String; { CEReactions }
     formMethod: String; { CEReactions }
@@ -1221,8 +1220,6 @@ type
   THTMLOrSVGImageElement = Variant;
   TCanvasImageSource = Variant;
 
-  TBlobCallback = procedure(blob: JBlob);
-
   // HTMLConstructor
   JHTMLCanvasElement = class external 'HTMLCanvasElement' (JHTMLElement)
   public
@@ -1232,9 +1229,6 @@ type
     function toDataURL: String; overload;
     function toDataURL(&type: String): String; overload;
     function toDataURL(&type: String; quality: Variant): String; overload;
-    procedure toBlob(_callback: TBlobCallback); overload;
-    procedure toBlob(_callback: TBlobCallback; &type: String); overload;
-    procedure toBlob(_callback: TBlobCallback; &type: String; quality: Variant); overload;
   end;
 
   JCanvasFillRule = String;
@@ -1561,7 +1555,6 @@ type
     kind: String;
     &type: String;
     procedure getAsString(_callback: TFunctionStringCallback);
-    function getAsFile: JFile;
   end;
 
   JDataTransferItemList = class external 'DataTransferItemList'
@@ -1570,7 +1563,6 @@ type
   public
     length: Integer;
     function add(data: String; &type: String): JDataTransferItem; overload;
-    function add(data: JFile): JDataTransferItem; overload;
     procedure remove(&index: Integer);
     procedure clear;
 
@@ -1582,7 +1574,6 @@ type
     dropEffect: String;
     effectAllowed: String;
     items: JDataTransferItemList; { SameObject }
-    files: JFileList; { SameObject }
     procedure setDragImage(image: JElement; x: Integer; y: Integer);
     function getData(format: String): String;
     procedure setData(format: String; data: String);
@@ -1900,16 +1891,12 @@ type
     procedure clearInterval(handle: Integer = 0);
     function createImageBitmap(image: TCanvasImageSource): JImageBitmap; overload;
     function createImageBitmap(image: JImageData): JImageBitmap; overload;
-    function createImageBitmap(image: JBlob): JImageBitmap; overload;
     function createImageBitmap(image: TCanvasImageSource; options: JImageBitmapOptions): JImageBitmap; overload;
     function createImageBitmap(image: JImageData; options: JImageBitmapOptions): JImageBitmap; overload;
-    function createImageBitmap(image: JBlob; options: JImageBitmapOptions): JImageBitmap; overload;
     function createImageBitmap(image: TCanvasImageSource; sx, sy, sw, sh: Integer): JImageBitmap; overload;
     function createImageBitmap(image: JImageData; sx, sy, sw, sh: Integer): JImageBitmap; overload;
-    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JImageBitmap; overload;
     function createImageBitmap(image: TCanvasImageSource; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
     function createImageBitmap(image: JImageData; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
-    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JImageBitmap; overload;
   end;
 
   JNavigator = class external 'Navigator'
@@ -2074,7 +2061,7 @@ type
   end;
 
   // Exposed = (Window, Worker)
-  JWebSocket = class external 'WebSocket' (JEventTarget)
+  JWebSocket = partial class external 'WebSocket' (JEventTarget)
   const
     CONNECTING: Integer = 0;
     OPEN: Integer = 1;
@@ -2098,7 +2085,6 @@ type
     procedure close(code: Integer { Clamp } ); overload;
     procedure close(code: Integer { Clamp } ; reason: String); overload;
     procedure send(data: String); overload;
-    procedure send(data: JBlob); overload;
     procedure send(data: JArrayBuffer); overload;
     procedure send(data: JArrayBufferView); overload;
   end;

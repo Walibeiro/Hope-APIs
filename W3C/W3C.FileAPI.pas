@@ -3,7 +3,7 @@ unit W3C.FileAPI;
 interface
 
 uses
-  ECMA.TypedArray, W3C.DOM4;
+  ECMA.TypedArray, W3C.DOM4, W3C.Html5;
 
 type
   JBlobPropertyBag = class external 'BlobPropertyBag'
@@ -18,14 +18,14 @@ type
     &type: String;
     isClosed: Boolean;
     constructor Create; overload;
-    constructor Create(blobParts: JArrayBuffer); overload;
-    constructor Create(blobParts: JArrayBuffer; Options: JBlobPropertyBag); overload;
-    constructor Create(blobParts: JArrayBufferView); overload;
-    constructor Create(blobParts: JArrayBufferView; options: JBlobPropertyBag); overload;
-    constructor Create(blobParts: JBlob); overload;
-    constructor Create(blobParts: JBlob; Options: JBlobPropertyBag); overload;
-    constructor Create(blobParts: String); overload;
-    constructor Create(blobParts: String; Options: JBlobPropertyBag); overload;
+    constructor Create(blobParts: array of JArrayBuffer); overload;
+    constructor Create(blobParts: array of JArrayBuffer; Options: JBlobPropertyBag); overload;
+    constructor Create(blobParts: array of JArrayBufferView); overload;
+    constructor Create(blobParts: array of JArrayBufferView; options: JBlobPropertyBag); overload;
+    constructor Create(blobParts: array of JBlob); overload;
+    constructor Create(blobParts: array of JBlob; Options: JBlobPropertyBag); overload;
+    constructor Create(blobParts: array of String); overload;
+    constructor Create(blobParts: array of String; Options: JBlobPropertyBag); overload;
     function slice: JBlob; overload;
     function slice(start: Integer { Clamp } ): JBlob; overload;
     function slice(start: Integer { Clamp } ; &end: Integer { Clamp } ): JBlob; overload;
@@ -105,3 +105,49 @@ type
     function createFor(blob: JBlob): String;
     procedure revokeObjectURL(url: String);
   end;
+
+  JHTMLInputElement = partial class external 'HTMLInputElement' (JHTMLElement)
+  public
+    files: JFileList;
+  end;
+
+  TBlobCallback = procedure(blob: JBlob);
+
+  JHTMLCanvasElement = partial class external 'HTMLCanvasElement' (JHTMLElement)
+  public
+    procedure toBlob(_callback: TBlobCallback; arguments: Variant); overload;
+    procedure toBlob(_callback: TBlobCallback; &type: String; arguments: Variant); overload;
+  end;
+
+  JDataTransferItem = partial class external 'DataTransferItem'
+  public
+    function getAsFile: JFile;
+  end;
+
+  JDataTransferItemList = partial class external 'DataTransferItemList'
+  public
+    function add(data: JFile): JDataTransferItem; overload;
+  end;
+
+  JDataTransfer = partial class external 'DataTransfer'
+  public
+    files: JFileList; { SameObject }
+  end;
+
+  JWindowOrWorkerGlobalScope = partial class external 'WindowOrWorkerGlobalScope'
+  public
+    function createImageBitmap(image: JBlob): JPromiseImageBitmap; overload;
+//    function createImageBitmap(image: JBlob; options: JImageBitmapOptions): JPromiseImageBitmap; overload;
+    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JPromiseImageBitmap; overload;
+//    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer; options: JImageBitmapOptions): JPromiseImageBitmap; overload;
+  end;
+
+  JWebSocket = partial class external 'WebSocket' (JEventTarget)
+  public
+    procedure send(data: JBlob); overload;
+  end;
+
+	JWindow = partial class external 'Window'
+	public
+    URL: JURL;
+	end;

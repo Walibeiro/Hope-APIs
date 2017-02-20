@@ -47,3 +47,8 @@ type
     constructor Create(&type: String); overload;
     constructor Create(&type: String; eventInitDict: JStorageEventInit); overload;
   end;
+
+var
+  WindowStorage external 'windowStorage': JStorage;
+  LocalStorage external 'localStorage': JStorage;
+  SessionStorage external 'sessionStorage': JStorage;

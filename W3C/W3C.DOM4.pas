@@ -56,12 +56,17 @@ type
   public
     procedure handleEvent(event: JEvent);
   end;
+  TEventListener = procedure(Event: JEvent);
 
   // Exposed = (Window, Worker)
   JEventTarget = partial class external 'EventTarget'
   public
-    procedure addEventListener(&type: String; Callback: JEventListener; capture: Boolean = False);
-    procedure removeEventListener(&type: String; Callback: JEventListener; capture: Boolean = False);
+    procedure addEventListener(&type: String; callback: procedure; capture : Boolean = false); overload;
+    procedure addEventListener(&type: String; callback: TEventListener; capture : Boolean = false); overload;
+    procedure addEventListener(&type: String; callback: JEventListener; capture : Boolean = false); overload;
+    procedure removeEventListener(&type: String; callback: procedure; capture : Boolean = false); overload;
+    procedure removeEventListener(&type: String; callback: TEventListener; capture : Boolean = false); overload;
+    procedure removeEventListener(&type: String; callback: JEventListener; capture : Boolean = false); overload;
     function dispatchEvent(event: JEvent): Boolean;
   end;
 
@@ -86,10 +91,15 @@ type
 
   // Exposed = Window
   JHTMLCollection = class external 'HTMLCollection'
+  private
+    function GetNamedItem(name: String): Variant; external 'namedItem';
   public
     length: Integer;
-    function item(&index: Integer): JElement;
-    function namedItem(&name: String): JElement;
+    function item(index: Integer): JElement;
+    function namedItem(name: String): JElement;
+
+    property Items[index: Integer]: JElement read item; default;
+    property NamedItems[name: String]: Variant read GetNamedItem;
   end;
 
   // Exposed = Window
@@ -290,7 +300,7 @@ type
   end;
 
   // Exposed = Window
-  JElement = class external 'Element' (JNode)
+  JElement = partial class external 'Element' (JNode)
   public
     namespaceURI: String;
     prefix: String;
@@ -461,3 +471,5 @@ type
     function createTreeWalker(root: JNode; whatToShow: Integer = $FFFFFFFF): JTreeWalker; overload; { NewObject }
     function createTreeWalker(root: JNode; whatToShow: Integer; filter: JNodeFilter): JTreeWalker; overload; { NewObject }
   end;
+
+var Document external 'document': JDocument;

@@ -1,9 +1,9 @@
-unit W3C.CSSomView;
+unit W3C.CSSOMView;
 
 interface
 
 uses
-  W3C.DOM4, W3C.Geometry;
+  W3C.DOM4, W3C.HTML5, W3C.Geometry, W3C.UIEvents;
 
 type
   JScrollBehavior = String;
@@ -58,7 +58,6 @@ type
   end;
 
   JDOMRect = variant;
-
 
   JCaretPosition = class external 'CaretPosition'
   public
@@ -137,12 +136,8 @@ type
 
   JMouseEvent = partial class external 'MouseEvent'
   public
-    screenX: Float;
-    screenY: Float;
     pageX: Float;
     pageY: Float;
-    clientX: Float;
-    clientY: Float;
     x: Float;
     y: Float;
     offsetX: Float;

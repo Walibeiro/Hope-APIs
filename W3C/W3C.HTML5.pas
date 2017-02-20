@@ -3,8 +3,8 @@ unit W3C.HTML5;
 interface
 
 uses
-  ECMA.Promise, ECMA.TypedArray, W3C.DOM4, W3C.FileAPI, W3C.UIEvents,
-  W3C.HighResolutionTime;
+  ECMA.Promise, ECMA.TypedArray, W3C.DOM4,
+  W3C.HighResolutionTime, W3C.UIEvents;
 
 type
   // OverrideBuiltins
@@ -22,6 +22,13 @@ type
     procedure SetNamedItem(name: String; value: JElement);
   public
     property Items[Name: String]: JElement read GetNamedItem write SetNamedItem; default;
+  end;
+
+  JElement = partial class external 'Element' (JNode)
+  public
+    innerHTML : String;
+    outerHTML : String;
+    procedure insertAdjacentHTML(position, text : String);
   end;
 
   JHTMLElement = partial class external 'HTMLElement' (JElement)
@@ -158,6 +165,7 @@ type
   JHTMLLinkElement = class external 'HTMLLinkElement' (JHTMLElement)
   public
     href: String;
+    download: String;
     crossOrigin: String;
     rel: String;
     rev: String;
@@ -304,7 +312,7 @@ type
     media: String;
   end;
 
-  JHTMLImageElement = class external 'HTMLImageElement' (JHTMLElement)
+  JHTMLImageElement = partial class external 'HTMLImageElement' (JHTMLElement)
   public
     alt: String;
     src: String;
@@ -851,7 +859,31 @@ type
     const Preserve = 'preserve';
   end;
 
-  JHTMLInputElement = class external 'HTMLInputElement' (JHTMLElement)
+  THTMLInputElementType = String;
+  THTMLInputElementTypeHelper = strict helper for THTMLInputElementType
+    const Text ='text';
+    const Password ='password';
+    const Submit ='submit';
+    const Reset ='reset';
+    const Radio ='radio';
+    const CheckBox ='checkbox';
+    const Button ='button';
+    const Color = 'color';
+    const Date = 'date';
+    const Datetime = 'datetime';
+    const DateTimeLocal = 'datetime-local';
+    const Email = 'email';
+    const Month = 'month';
+    const Number = 'number';
+    const Range = 'range';
+    const Search = 'search';
+    const Tel = 'tel';
+    const Time = 'time';
+    const Url = 'url';
+    const Week = 'week';
+  end;
+
+  JHTMLInputElement = partial class external 'HTMLInputElement' (JHTMLElement)
   public
     accept: String;
     alt: String;
@@ -862,7 +894,6 @@ type
     dirName: String;
     disabled: Boolean;
     form: JHTMLFormElement;
-    files: JFileList;
     formAction: String;
     formEnctype: String;
     formMethod: String;
@@ -885,7 +916,7 @@ type
     size: Integer;
     src: String;
     step: String;
-    &type: String;
+    &type: THTMLInputElementType;
     defaultValue: String;
     value: String; { TreatNullAs=EmptyString }
     valueAsDate: Variant;
@@ -1158,20 +1189,18 @@ type
     content: JDocumentFragment;
   end;
 
-  TBlobCallback = procedure(blob: JBlob);
+  JRenderingContext = class external
+  end;
 
-  JRenderingContext = class external;
-
-  JHTMLCanvasElement = class external 'HTMLCanvasElement' (JHTMLElement)
+  JHTMLCanvasElement = partial class external 'HTMLCanvasElement' (JHTMLElement)
   public
     width: Integer;
     height: Integer;
-    function getContext(contextId: String; arguments: Variant): JRenderingContext;
+    function getContext(contextId: String): JRenderingContext; overload;
+    function getContext(contextId: String; arguments: Variant): JRenderingContext; overload;
     function probablySupportsContext(contextId: String; arguments: Variant): Boolean;
     function toDataURL(arguments: Variant): String; overload;
     function toDataURL(&type: String; arguments: Variant): String; overload;
-    procedure toBlob(_callback: TBlobCallback; arguments: Variant); overload;
-    procedure toBlob(_callback: TBlobCallback; &type: String; arguments: Variant); overload;
   end;
 
   // NoInterfaceObject
@@ -1183,34 +1212,31 @@ type
 
   TFunctionStringCallback = procedure(data: String);
 
-  JDataTransferItem = class external 'DataTransferItem'
+  JDataTransferItem = partial class external 'DataTransferItem'
   public
     kind: String;
     &type: String;
     procedure getAsString(_callback: TFunctionStringCallback);
-    function getAsFile: JFile;
   end;
 
-  JDataTransferItemList = class external 'DataTransferItemList'
+  JDataTransferItemList = partial class external 'DataTransferItemList'
   private
     function GetItem(Index: Integer): JDataTransferItem;
   public
     length: Integer;
     function add(data: String; &type: String): JDataTransferItem; overload;
-    function add(data: JFile): JDataTransferItem; overload;
     procedure remove(&index: Integer);
     procedure clear;
 
     property Items[Index: Integer]: JDataTransferItem read GetItem;
   end;
 
-  JDataTransfer = class external 'DataTransfer'
+  JDataTransfer = partial class external 'DataTransfer'
   public
     dropEffect: String;
     effectAllowed: String;
     items: JDataTransferItemList; { SameObject }
     types: array of String; { SameObject }
-    files: JFileList; { SameObject }
     procedure setDragImage(image: JElement; x, y: Integer);
     function getData(format: String): String;
     procedure setData(format: String; data: String);
@@ -1458,7 +1484,7 @@ type
   end;
 
   // NoInterfaceObject, Exposed = (Window, Worker)
-  JWindowOrWorkerGlobalScope = class external 'WindowOrWorkerGlobalScope'
+  JWindowOrWorkerGlobalScope = partial class external 'WindowOrWorkerGlobalScope'
   public
     origin: String; { Replaceable }
     function btoa(btoa: String): String;
@@ -1475,9 +1501,7 @@ type
     procedure clearInterval(handle: Integer = 0);
 
     function createImageBitmap(image: Variant): JPromiseImageBitmap; overload;
-    function createImageBitmap(image: JBlob): JPromiseImageBitmap; overload;
     function createImageBitmap(image: Variant; sx, sy, sw, sh: Integer): JPromiseImageBitmap; overload;
-    function createImageBitmap(image: JBlob; sx, sy, sw, sh: Integer): JPromiseImageBitmap; overload;
   end;
 
   // NoInterfaceObject
@@ -1750,6 +1774,15 @@ type
     procedure captureEvents;
     procedure releaseEvents;
 
+		function setTimeout(handler: procedure; timeout: Integer = 0; arguments: Variant = nil): Integer;
+		procedure clearTimeout(handle: Integer = 0);
+		function setInterval(handler: procedure; timeout: Integer = 0; arguments: Variant = nil): Integer;
+		procedure clearInterval(handle: Integer = 0);
+
     property NamedItems[Name: String]: JObject read GetNamedItem; default;
     property IndexedItems[Index: Integer]: JWindowProxy read GetIndexedItem;
   end;
+
+var
+  Navigator external 'navigator': JNavigator;
+  Window external 'window': JWindow;

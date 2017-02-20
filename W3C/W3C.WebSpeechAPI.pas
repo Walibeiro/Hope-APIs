@@ -94,11 +94,21 @@ type
     procedure abort;
   end;
 
+  JSpeechSynthesisVoice = class external 'SpeechSynthesisVoice'
+  public
+    voiceURI: String;
+    name: String;
+    lang: String;
+    localService: Boolean;
+    default: Boolean;
+  end;
+
   JSpeechSynthesisUtterance = class external 'SpeechSynthesisUtterance' (JEventTarget)
   public
     text: String;
     lang: String;
     voiceURI: String;
+    voice: JSpeechSynthesisVoice;
     volume: Float;
     rate: Float;
     pitch: Float;
@@ -120,19 +130,12 @@ type
     name: String;
   end;
 
-  JSpeechSynthesisVoice = class external 'SpeechSynthesisVoice'
-  public
-    voiceURI: String;
-    name: String;
-    lang: String;
-    localService: Boolean;
-    default: Boolean;
-  end;
-
   JSpeechSynthesisVoiceList = class external 'SpeechSynthesisVoiceList'
   public
     length: Integer;
-    function item(&index: Integer): JSpeechSynthesisVoice;
+    function item(index: Integer): JSpeechSynthesisVoice;
+
+    property Items[index : Integer] : JSpeechSynthesisVoice read item; default;
   end;
 
   JSpeechSynthesis = class external 'SpeechSynthesis'
@@ -152,3 +155,5 @@ type
   public
     speechSynthesis: JSpeechSynthesis;
   end;
+
+var SpeechSynthesis external 'window.speechSynthesis': JSpeechSynthesis;

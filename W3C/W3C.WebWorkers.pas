@@ -7,10 +7,12 @@ uses
 
 type
   // Exposed = Worker
-  JWorkerNavigator = partial class external 'WorkerNavigator';
+  JWorkerNavigator = partial class external 'WorkerNavigator'
+  end;
 
   // Exposed = Worker
-  JWorkerLocation = class external 'WorkerLocation';
+  JWorkerLocation = class external 'WorkerLocation'
+  end;
 
   // Exposed = Worker
   JWorkerGlobalScope = partial class external 'WorkerGlobalScope' (JEventTarget)

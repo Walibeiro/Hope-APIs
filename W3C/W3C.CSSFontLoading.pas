@@ -66,8 +66,6 @@ type
     constructor Create(&type: String; eventInitDict: JCSSFontFaceLoadEventInit); overload;
   end;
 
-  JFontFaceSetLoadStatus = (ffslsLoading, ffslsLoaded);
-
   // SetClass(FontFace)
   JFontFaceSet = class external 'FontFaceSet'
   public
@@ -75,11 +73,11 @@ type
     onloadingdone: TEventHandler;
     onloadingerror: TEventHandler;
     status: JFontFaceLoadStatus;
+    ready: JPromiseFontFace;
     function load(font: String): array of JFontFace; overload;
     function load(font: String; text: String): array of JFontFace; overload;
     function check(font: String): Boolean; overload;
     function check(font: String; text: String): Boolean; overload;
-    function ready: JFontFaceSet;
   end;
 
   // NoInterfaceObject
@@ -88,3 +86,7 @@ type
     fonts: JFontFaceSet;
   end;
 
+  JDocument = partial class external 'Document' (JNode)
+  public
+    fonts: JFontFaceSet;
+  end;
