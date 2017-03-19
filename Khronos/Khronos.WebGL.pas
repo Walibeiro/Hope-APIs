@@ -32,14 +32,16 @@ type
     failIfMajorPerformanceCaveat: TGLboolean;
   end;
 
-  JWebGLObject = class external 'WebGLObject';
+  JWebGLObject = class external 'WebGLObject'
+  end;
   JWebGLBuffer = class external 'WebGLBuffer' (JWebGLObject);
   JWebGLFramebuffer = class external 'WebGLFramebuffer' (JWebGLObject);
   JWebGLProgram = class external 'WebGLProgram' (JWebGLObject);
   JWebGLRenderbuffer = class external 'WebGLRenderbuffer' (JWebGLObject);
   JWebGLShader = class external 'WebGLShader' (JWebGLObject);
   JWebGLTexture = class external 'WebGLTexture' (JWebGLObject);
-  JWebGLUniformLocation = class external 'WebGLUniformLocation';
+  JWebGLUniformLocation = class external 'WebGLUniformLocation'
+  end;
 
   JWebGLActiveInfo = class external 'WebGLActiveInfo'
   public
@@ -373,26 +375,26 @@ type
     procedure bindFramebuffer(target: TGLenum; framebuffer: JWebGLFramebuffer);
     procedure bindRenderbuffer(target: TGLenum; renderbuffer: JWebGLRenderbuffer);
     procedure bindTexture(target: TGLenum; texture: JWebGLTexture);
-    procedure blendColor(red: TGLclampf; green: TGLclampf; blue: TGLclampf; alpha: TGLclampf);
+    procedure blendColor(red, green, blue, alpha: TGLclampf);
     procedure blendEquation(mode: TGLenum);
-    procedure blendEquationSeparate(modeRGB: TGLenum; modeAlpha: TGLenum);
-    procedure blendFunc(sfactor: TGLenum; dfactor: TGLenum);
-    procedure blendFuncSeparate(srcRGB: TGLenum; dstRGB: TGLenum; srcAlpha: TGLenum; dstAlpha: TGLenum);
+    procedure blendEquationSeparate(modeRGB, modeAlpha: TGLenum);
+    procedure blendFunc(sfactor, dfactor: TGLenum);
+    procedure blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha: TGLenum);
     procedure bufferData(target: TGLenum; size: TGLsizeiptr; usage: TGLenum); overload;
     procedure bufferData(target: TGLenum; data: JArrayBuffer; usage: TGLenum); overload;
     procedure bufferData(target: TGLenum; data: JArrayBufferView; usage: TGLenum); overload;
     procedure bufferSubData(target: TGLenum; offset: TGLintptr; data: TBufferDataSource);
     function checkFramebufferStatus(target: TGLenum): TGLenum; { WebGLHandlesContextLoss } 
     procedure clear(mask: TGLbitfield);
-    procedure clearColor(red: TGLclampf; green: TGLclampf; blue: TGLclampf; alpha: TGLclampf);
+    procedure clearColor(red, green, blue, alpha: TGLclampf);
     procedure clearDepth(depth: TGLclampf);
     procedure clearStencil(s: TGLint);
-    procedure colorMask(red: TGLboolean; green: TGLboolean; blue: TGLboolean; alpha: TGLboolean);
+    procedure colorMask(red, green, blue, alpha: TGLboolean);
     procedure compileShader(shader: JWebGLShader);
-    procedure compressedTexImage2D(target: TGLenum; level: TGLint; internalformat: TGLenum; width: TGLsizei; height: TGLsizei; border: TGLint; data: JArrayBufferView);
-    procedure compressedTexSubImage2D(target: TGLenum; level: TGLint; xoffset: TGLint; yoffset: TGLint; width: TGLsizei; height: TGLsizei; format: TGLenum; data: JArrayBufferView);
-    procedure copyTexImage2D(target: TGLenum; level: TGLint; internalformat: TGLenum; x: TGLint; y: TGLint; width: TGLsizei; height: TGLsizei; border: TGLint);
-    procedure copyTexSubImage2D(target: TGLenum; level: TGLint; xoffset: TGLint; yoffset: TGLint; x: TGLint; y: TGLint; width: TGLsizei; height: TGLsizei);
+    procedure compressedTexImage2D(target: TGLenum; level: TGLint; internalformat: TGLenum; width, height: TGLsizei; border: TGLint; data: JArrayBufferView);
+    procedure compressedTexSubImage2D(target: TGLenum; level: TGLint; xoffset, yoffset: TGLint; width, height: TGLsizei; format: TGLenum; data: JArrayBufferView);
+    procedure copyTexImage2D(target: TGLenum; level: TGLint; internalformat: TGLenum; x, y: TGLint; width, height: TGLsizei; border: TGLint);
+    procedure copyTexSubImage2D(target: TGLenum; level, xoffset, yoffset, x, y: TGLint; width, height: TGLsizei);
     function createBuffer: JWebGLBuffer;
     function createFramebuffer: JWebGLFramebuffer;
     function createProgram: JWebGLProgram;
@@ -408,7 +410,7 @@ type
     procedure deleteTexture(texture: JWebGLTexture);
     procedure depthFunc(func: TGLenum);
     procedure depthMask(flag: TGLboolean);
-    procedure depthRange(zNear: TGLclampf; zFar: TGLclampf);
+    procedure depthRange(zNear, zFar: TGLclampf);
     procedure detachShader(&program: JWebGLProgram; shader: JWebGLShader);
     procedure disable(cap: TGLenum);
     procedure disableVertexAttribArray(&index: TGLuint);
@@ -418,26 +420,26 @@ type
     procedure enableVertexAttribArray(&index: TGLuint);
     procedure finish;
     procedure flush;
-    procedure framebufferRenderbuffer(target: TGLenum; attachment: TGLenum; renderbuffertarget: TGLenum; renderbuffer: JWebGLRenderbuffer);
-    procedure framebufferTexture2D(target: TGLenum; attachment: TGLenum; textarget: TGLenum; texture: JWebGLTexture; level: TGLint);
+    procedure framebufferRenderbuffer(target, attachment, renderbuffertarget: TGLenum; renderbuffer: JWebGLRenderbuffer);
+    procedure framebufferTexture2D(target, attachment, textarget: TGLenum; texture: JWebGLTexture; level: TGLint);
     procedure frontFace(mode: TGLenum);
     procedure generateMipmap(target: TGLenum);
     function getActiveAttrib(&program: JWebGLProgram; &index: TGLuint): JWebGLActiveInfo;
     function getActiveUniform(&program: JWebGLProgram; &index: TGLuint): JWebGLActiveInfo;
     function getAttachedShaders(&program: JWebGLProgram): array of JWebGLShader;
     function getAttribLocation(&program: JWebGLProgram; &name: String): TGLint; { WebGLHandlesContextLoss } 
-    function getBufferParameter(target: TGLenum; pname: TGLenum): Variant;
+    function getBufferParameter(target, pname: TGLenum): Variant;
     function getParameter(pname: TGLenum): Variant;
     function getError: TGLenum; { WebGLHandlesContextLoss } 
-    function getFramebufferAttachmentParameter(target: TGLenum; attachment: TGLenum; pname: TGLenum): Variant;
+    function getFramebufferAttachmentParameter(target, attachment: TGLenum; pname: TGLenum): Variant;
     function getProgramParameter(&program: JWebGLProgram; pname: TGLenum): Variant;
     function getProgramInfoLog(&program: JWebGLProgram): String;
-    function getRenderbufferParameter(target: TGLenum; pname: TGLenum): Variant;
+    function getRenderbufferParameter(target, pname: TGLenum): Variant;
     function getShaderParameter(shader: JWebGLShader; pname: TGLenum): Variant;
-    function getShaderPrecisionFormat(shadertype: TGLenum; precisiontype: TGLenum): JWebGLShaderPrecisionFormat;
+    function getShaderPrecisionFormat(shadertype, precisiontype: TGLenum): JWebGLShaderPrecisionFormat;
     function getShaderInfoLog(shader: JWebGLShader): String;
     function getShaderSource(shader: JWebGLShader): String;
-    function getTexParameter(target: TGLenum; pname: TGLenum): Variant;
+    function getTexParameter(target, pname: TGLenum): Variant;
     function getUniform(&program: JWebGLProgram; location: JWebGLUniformLocation): Variant;
     function getUniformLocation(&program: JWebGLProgram; &name: String): JWebGLUniformLocation;
     function getVertexAttrib(&index: TGLuint; pname: TGLenum): Variant;
@@ -453,46 +455,46 @@ type
     procedure lineWidth(width: TGLfloat);
     procedure linkProgram(&program: JWebGLProgram);
     procedure pixelStorei(pname: TGLenum; param: TGLint);
-    procedure polygonOffset(factor: TGLfloat; units: TGLfloat);
-    procedure readPixels(x: TGLint; y: TGLint; width: TGLsizei; height: TGLsizei; format: TGLenum; &type: TGLenum; pixels: JArrayBufferView);
-    procedure renderbufferStorage(target: TGLenum; internalformat: TGLenum; width: TGLsizei; height: TGLsizei);
+    procedure polygonOffset(factor, units: TGLfloat);
+    procedure readPixels(x, y: TGLint; width, height: TGLsizei; format, &type: TGLenum; pixels: JArrayBufferView);
+    procedure renderbufferStorage(target: TGLenum; internalformat: TGLenum; width, height: TGLsizei);
     procedure sampleCoverage(value: TGLclampf; invert: TGLboolean);
-    procedure scissor(x: TGLint; y: TGLint; width: TGLsizei; height: TGLsizei);
+    procedure scissor(x, y: TGLint; width, height: TGLsizei);
     procedure shaderSource(shader: JWebGLShader; source: String);
     procedure stencilFunc(func: TGLenum; ref: TGLint; mask: TGLuint);
-    procedure stencilFuncSeparate(face: TGLenum; func: TGLenum; ref: TGLint; mask: TGLuint);
+    procedure stencilFuncSeparate(face, func: TGLenum; ref: TGLint; mask: TGLuint);
     procedure stencilMask(mask: TGLuint);
     procedure stencilMaskSeparate(face: TGLenum; mask: TGLuint);
-    procedure stencilOp(fail: TGLenum; zfail: TGLenum; zpass: TGLenum);
-    procedure stencilOpSeparate(face: TGLenum; fail: TGLenum; zfail: TGLenum; zpass: TGLenum);
-    procedure texImage2D(target: TGLenum; level: TGLint; internalformat: TGLint; width: TGLsizei; height: TGLsizei; border: TGLint; format: TGLenum; &type: TGLenum; pixels: JArrayBufferView); overload;
-    procedure texImage2D(target: TGLenum; level: TGLint; internalformat: TGLint; format: TGLenum; &type: TGLenum; source: TTexImageSource); overload;
-    procedure texParameterf(target: TGLenum; pname: TGLenum; param: TGLfloat);
-    procedure texParameteri(target: TGLenum; pname: TGLenum; param: TGLint);
-    procedure texSubImage2D(target: TGLenum; level: TGLint; xoffset: TGLint; yoffset: TGLint; width: TGLsizei; height: TGLsizei; format: TGLenum; &type: TGLenum; pixels: JArrayBufferView); overload;
-    procedure texSubImage2D(target: TGLenum; level: TGLint; xoffset: TGLint; yoffset: TGLint; format: TGLenum; &type: TGLenum; source: TTexImageSource); overload;
+    procedure stencilOp(fail, zfail, zpass: TGLenum);
+    procedure stencilOpSeparate(face, fail, zfail, zpass: TGLenum);
+    procedure texImage2D(target: TGLenum; level, internalformat: TGLint; width, height: TGLsizei; border: TGLint; format, &type: TGLenum; pixels: JArrayBufferView); overload;
+    procedure texImage2D(target: TGLenum; level, internalformat: TGLint; format, &type: TGLenum; source: TTexImageSource); overload;
+    procedure texParameterf(target, pname: TGLenum; param: TGLfloat);
+    procedure texParameteri(target, pname: TGLenum; param: TGLint);
+    procedure texSubImage2D(target: TGLenum; level, xoffset, yoffset: TGLint; width, height: TGLsizei; format, &type: TGLenum; pixels: JArrayBufferView); overload;
+    procedure texSubImage2D(target: TGLenum; level, xoffset, yoffset: TGLint; format, &type: TGLenum; source: TTexImageSource); overload;
     procedure uniform1f(location: JWebGLUniformLocation; x: TGLfloat);
     procedure uniform1fv(location: JWebGLUniformLocation; v: JFloat32Array); overload;
     procedure uniform1fv(location: JWebGLUniformLocation; v: array of TGLfloat); overload;
     procedure uniform1i(location: JWebGLUniformLocation; x: TGLint);
     procedure uniform1iv(location: JWebGLUniformLocation; v: JInt32Array); overload;
     procedure uniform1iv(location: JWebGLUniformLocation; v: array of Integer); overload;
-    procedure uniform2f(location: JWebGLUniformLocation; x: TGLfloat; y: TGLfloat);
+    procedure uniform2f(location: JWebGLUniformLocation; x, y: TGLfloat);
     procedure uniform2fv(location: JWebGLUniformLocation; v: JFloat32Array); overload;
     procedure uniform2fv(location: JWebGLUniformLocation; v: array of TGLfloat); overload;
-    procedure uniform2i(location: JWebGLUniformLocation; x: TGLint; y: TGLint);
+    procedure uniform2i(location: JWebGLUniformLocation; x, y: TGLint);
     procedure uniform2iv(location: JWebGLUniformLocation; v: JInt32Array); overload;
     procedure uniform2iv(location: JWebGLUniformLocation; v: array of Integer); overload;
-    procedure uniform3f(location: JWebGLUniformLocation; x: TGLfloat; y: TGLfloat; z: TGLfloat);
+    procedure uniform3f(location: JWebGLUniformLocation; x, y, z: TGLfloat);
     procedure uniform3fv(location: JWebGLUniformLocation; v: JFloat32Array); overload;
     procedure uniform3fv(location: JWebGLUniformLocation; v: array of TGLfloat); overload;
-    procedure uniform3i(location: JWebGLUniformLocation; x: TGLint; y: TGLint; z: TGLint);
+    procedure uniform3i(location: JWebGLUniformLocation; x, y, z: TGLint);
     procedure uniform3iv(location: JWebGLUniformLocation; v: JInt32Array); overload;
     procedure uniform3iv(location: JWebGLUniformLocation; v: array of Integer); overload;
-    procedure uniform4f(location: JWebGLUniformLocation; x: TGLfloat; y: TGLfloat; z: TGLfloat; w: TGLfloat);
+    procedure uniform4f(location: JWebGLUniformLocation; x, y, z, w: TGLfloat);
     procedure uniform4fv(location: JWebGLUniformLocation; v: JFloat32Array); overload;
     procedure uniform4fv(location: JWebGLUniformLocation; v: array of TGLfloat); overload;
-    procedure uniform4i(location: JWebGLUniformLocation; x: TGLint; y: TGLint; z: TGLint; w: TGLint);
+    procedure uniform4i(location: JWebGLUniformLocation; x, y, z, w: TGLint);
     procedure uniform4iv(location: JWebGLUniformLocation; v: JInt32Array); overload;
     procedure uniform4iv(location: JWebGLUniformLocation; v: array of Integer); overload;
     procedure uniformMatrix2fv(location: JWebGLUniformLocation; transpose: TGLboolean; value: JFloat32Array); overload;
@@ -505,14 +507,14 @@ type
     procedure validateProgram(&program: JWebGLProgram);
     procedure vertexAttrib1f(&index: TGLuint; x: TGLfloat);
     procedure vertexAttrib1fv(&index: TGLuint; values: TVertexAttribFVSource);
-    procedure vertexAttrib2f(&index: TGLuint; x: TGLfloat; y: TGLfloat);
+    procedure vertexAttrib2f(&index: TGLuint; x, y: TGLfloat);
     procedure vertexAttrib2fv(&index: TGLuint; values: TVertexAttribFVSource);
-    procedure vertexAttrib3f(&index: TGLuint; x: TGLfloat; y: TGLfloat; z: TGLfloat);
+    procedure vertexAttrib3f(&index: TGLuint; x, y, z: TGLfloat);
     procedure vertexAttrib3fv(&index: TGLuint; values: TVertexAttribFVSource);
-    procedure vertexAttrib4f(&index: TGLuint; x: TGLfloat; y: TGLfloat; z: TGLfloat; w: TGLfloat);
+    procedure vertexAttrib4f(&index: TGLuint; x, y, z, w: TGLfloat);
     procedure vertexAttrib4fv(&index: TGLuint; values: TVertexAttribFVSource);
     procedure vertexAttribPointer(&index: TGLuint; size: TGLint; &type: TGLenum; normalized: TGLboolean; stride: TGLsizei; offset: TGLintptr);
-    procedure viewportFunc(x: TGLint; y: TGLint; width: TGLsizei; height: TGLsizei); external 'viewport';
+    procedure viewportFunc(x, y: TGLint; width, height: TGLsizei); external 'viewport';
   end;
 
   JWebGLRenderingContext = class external 'WebGLRenderingContext'
@@ -528,4 +530,3 @@ type
   public
     statusMessage: String;
   end;
-
