@@ -141,6 +141,13 @@ type
     easing: String;
   end;
 
+  JKeyframeEffectOptions = class external 'KeyframeEffectOptions' (JAnimationEffectTimingProperties)
+  public
+    iterationComposite: JIterationCompositeOperation;
+    composite: JCompositeOperation;
+    spacing: String;
+  end;
+
   JKeyframeAnimationOptions = class external 'KeyframeAnimationOptions' (JKeyframeEffectOptions)
   public
     id: String;
@@ -194,13 +201,6 @@ type
     offset: Float;
     easing: String;
     composite: JCompositeOperation;
-  end;
-
-  JKeyframeEffectOptions = class external 'KeyframeEffectOptions' (JAnimationEffectTimingProperties)
-  public
-    iterationComposite: JIterationCompositeOperation;
-    composite: JCompositeOperation;
-    spacing: String;
   end;
 
   JDocument = partial class external 'Document'
