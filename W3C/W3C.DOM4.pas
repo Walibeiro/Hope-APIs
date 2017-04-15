@@ -106,8 +106,13 @@ type
   JNodeList = class external 'NodeList'
   public
     length: Integer;
-    function item(&index: Integer): JNode;
-//  iterable<DOMString>;
+    function item(&index: Integer): JNode; external array;
+
+    // iterable<Node>;
+    procedure forEach(callback: procedure(Node: JNode)); overload;
+    procedure forEach(callback: procedure(Node: JNode); thisArg: Variant); overload;
+
+    property Items[Index: Integer]: JNode read item;
   end;
 
   // NoInterfaceObject, Exposed = Window
