@@ -101,8 +101,8 @@ type
 
   JURL = partial class external 'URL'
   public
-    function createObjectURL(blob: JBlob): String;
-    function createFor(blob: JBlob): String;
+    class function createObjectURL(blob: JBlob): String;
+    class function createFor(blob: JBlob): String;
     procedure revokeObjectURL(url: String);
   end;
 

@@ -27,12 +27,14 @@ type
     function serializeToString(root: JNode): String;
   end;
 
+(*
   JElement = partial class external 'Element'
   public
     innerHTML: String; { CEReactions,TreatNullAs=EmptyString }
     outerHTML: String; { CEReactions,TreatNullAs=EmptyString }
     procedure insertAdjacentHTML(position: String; text: String); { CEReactions }
   end;
+*)
 
   JRange = partial class external 'Range'
   public

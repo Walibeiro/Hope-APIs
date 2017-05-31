@@ -49,11 +49,13 @@ type
     modifierSymbolLock: Boolean;
   end;
 
+  JMouseButton = enum (Left, Middle, Right);
+
   JMouseEventInit = partial class external 'MouseEventInit' (JEventModifierInit)
   public
     screenX, screenY: Integer;
     clientX, clientY: Integer;
-    button: Integer;
+    button: JMouseButton;
     buttons: Integer;
     relatedTarget: JEventTarget;
   end;
@@ -63,7 +65,7 @@ type
     screenX, screenY: Integer;
     clientX, clientY: Integer;
     ctrlKey, shiftKey, altKey, metaKey: Boolean;
-    button: Integer;
+    button: JMouseButton;
     buttons: Integer;
     relatedTarget: JEventTarget;
     constructor Create(&type: String); overload;

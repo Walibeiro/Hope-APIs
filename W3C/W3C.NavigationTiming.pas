@@ -3,7 +3,7 @@ unit W3C.NavigationTiming;
 interface
 
 uses
-  W3C.PerformanceTimeline;
+  W3C.HTML5, W3C.PerformanceTimeline;
 
 type
   JPerformanceTiming = class external 'PerformanceTiming'

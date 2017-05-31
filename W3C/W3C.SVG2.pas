@@ -176,7 +176,6 @@ type
     SVG_UNIT_TYPE_OBJECTBOUNDINGBOX: Integer = 2;
   end;
 
-  // NoInterfaceObject
   JSVGZoomAndPan = class external 'SVGZoomAndPan'
   const
     SVG_ZOOMANDPAN_UNKNOWN: Integer = 0;
@@ -186,13 +185,11 @@ type
     zoomAndPan: Integer;
   end;
 
-  // NoInterfaceObject
   JSVGURIReference = class external 'SVGURIReference'
   public
     href: JSVGAnimatedString; { SameObject }
   end;
 
-  // NoInterfaceObject
   JSVGTests = class external 'SVGTests'
   public
     requiredExtensions: JSVGStringList; { SameObject }
@@ -300,7 +297,6 @@ type
     function getPointAtLength(distance: Float): JDOMPoint;
   end;
 
-  // NoInterfaceObject
   JSVGFitToViewBox = class external 'SVGFitToViewBox'
   public
     viewBox: JSVGAnimatedRect; { SameObject }
@@ -371,7 +367,6 @@ type
     animatedInstanceRoot: JSVGElement; { SameObject }
   end;
 
-  // NoInterfaceObject
   JSVGElementInstance = class external 'SVGElementInstance'
   public
     correspondingElement: JSVGElement; { SameObject }
@@ -388,7 +383,6 @@ type
     title: String;
   end;
 
-  // NoInterfaceObject
   JGetSVGDocument = class external 'GetSVGDocument'
   public
     function getSVGDocument: JDocument;
@@ -450,7 +444,6 @@ type
     property Item[Index: Integer]: JDOMPoint read getItem write setItem; default;
   end;
 
-  // NoInterfaceObject
   JSVGAnimatedPoints = class external 'SVGAnimatedPoints'
   public
     points: JSVGPointList; { SameObject }
@@ -642,10 +635,10 @@ type
   JSVGUseElementShadowRoot = class external 'SVGUseElementShadowRoot' (JShadowRoot)
   end;
 
-  // Constructor( Animation source , Animatable newTarget)
   JShadowAnimation = class external 'ShadowAnimation' (JAnimation)
   public
     sourceAnimation: JAnimation; { SameObject }
+    constructor Create(source: JAnimation; newTarget: JAnimatable);
   end;
 
   JDocument = partial class external 'Document'

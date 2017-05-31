@@ -225,7 +225,8 @@ type
     constructor Create(descriptionInitDict: JRTCSessionDescriptionInit);
   end;
 
-  JRTCStatsReport = class external 'RTCStatsReport';
+  JRTCStatsReport = class external 'RTCStatsReport'
+  end;
 
   JRTCDtlsTransport = partial class external 'RTCDtlsTransport';
 

@@ -93,9 +93,11 @@ type
     procedure unwatchAdvertisements;
   end;
 
-  JBluetoothManufacturerDataMap = class external 'BluetoothManufacturerDataMap';
+  JBluetoothManufacturerDataMap = class external 'BluetoothManufacturerDataMap'
+  end;
 
-  JBluetoothServiceDataMap = class external 'BluetoothServiceDataMap';
+  JBluetoothServiceDataMap = class external 'BluetoothServiceDataMap'
+  end;
 
   JBluetoothAdvertisingEventInit = class external 'BluetoothAdvertisingEventInit' (JEventInit)
   public

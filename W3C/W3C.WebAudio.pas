@@ -7,42 +7,42 @@ uses
   W3C.WebWorkers, W3C.WebMessaging;
 
 type
-  JAudioContextState = String;
-  JAudioContextStateHelper = strict helper for JAudioContextState
+  TAudioContextState = String;
+  TAudioContextStateHelper = strict helper for TAudioContextState
     const Suspended = 'suspended';
     const Running = 'running';
     const Closed = 'closed';
   end;
 
-  JAudioContextPlaybackCategory = String;
-  JAudioContextPlaybackCategoryHelper = strict helper for JAudioContextPlaybackCategory
+  TAudioContextPlaybackCategory = String;
+  TAudioContextPlaybackCategoryHelper = strict helper for TAudioContextPlaybackCategory
     const Balanced = 'balanced';
     const Interactive = 'interactive';
     const Playback = 'playback';
   end;
 
-  JPanningModelType = String;
-  JPanningModelTypeHelper = strict helper for JPanningModelType
+  TPanningModelType = String;
+  TPanningModelTypeHelper = strict helper for TPanningModelType
     const Equalpower = 'equalpower';
     const HRTF = 'HRTF';
   end;
 
-  JDistanceModelType = String;
-  JDistanceModelTypeHelper = strict helper for JDistanceModelType
+  TDistanceModelType = String;
+  TDistanceModelTypeHelper = strict helper for TDistanceModelType
     const Linear = 'linear';
     const Inverse = 'inverse';
     const Exponential = 'exponential';
   end;
 
-  JOverSampleType = String;
-  JOverSampleTypeHelper = strict helper for JOverSampleType
+  TOverSampleType = String;
+  TOverSampleTypeHelper = strict helper for TOverSampleType
     const None = 'none';
     const TwoTimes = '2x';
     const FourTimes = '4x';
   end;
 
-  JOscillatorType = String;
-  JOscillatorTypeHelper = strict helper for JOscillatorType
+  TOscillatorType = String;
+  TOscillatorTypeHelper = strict helper for TOscillatorType
     const Sine = 'sine';
     const Square = 'square';
     const Sawtooth = 'sawtooth';
@@ -50,22 +50,22 @@ type
     const Custom = 'custom';
   end;
 
-  JChannelCountMode = String;
-  JChannelCountModeHelper = strict helper for JChannelCountMode
+  TChannelCountMode = String;
+  TChannelCountModeHelper = strict helper for TChannelCountMode
     const Max = 'max';
     const ClampedMax = 'clamped-max';
     const Explicit = 'explicit';
   end;
 
-  JChannelInterpretation = String;
-  JChannelInterpretationHelper = strict helper for JChannelInterpretation
+  TChannelInterpretation = String;
+  TChannelInterpretationHelper = strict helper for TChannelInterpretation
     const Speakers = 'speakers';
     const Discrete = 'discrete';
   end;
 
   JAudioContextOptions = class external 'AudioContextOptions'
   public
-    playbackCategory: JAudioContextPlaybackCategory;
+    playbackCategory: TAudioContextPlaybackCategory;
   end;
 
   JDOMException = Variant;
@@ -77,8 +77,10 @@ type
     duration: Float;
     numberOfChannels: Integer;
     function getChannelData(channel: Integer): JFloat32Array;
-    procedure copyFromChannel(destination: JFloat32Array; channelNumber: Integer; startInChannel: Integer = 0);
-    procedure copyToChannel(source: JFloat32Array; channelNumber: Integer; startInChannel: Integer = 0);
+    procedure copyFromChannel(destination: JFloat32Array; channelNumber: Integer); overload;
+    procedure copyFromChannel(destination: JFloat32Array; channelNumber: Integer; startInChannel: Integer); overload;
+    procedure copyToChannel(source: JFloat32Array; channelNumber: Integer); overload;
+    procedure copyToChannel(source: JFloat32Array; channelNumber: Integer; startInChannel: Integer); overload;
   end;
 
   TDecodeErrorCallback = procedure(error: JDOMException);
@@ -93,7 +95,7 @@ type
   public
     sampleRate: Float;
     currentTime: Float;
-    state: JAudioContextState;
+    state: TAudioContextState;
     onstatechange: TEventHandler;
   end;
 
@@ -120,10 +122,13 @@ type
     numberOfInputs: Integer;
     numberOfOutputs: Integer;
     channelCount: Integer;
-    channelCountMode: JChannelCountMode;
-    channelInterpretation: JChannelInterpretation;
-    function connect(destination: JAudioNode; output: Integer = 0; input: Integer = 0): JAudioNode; overload;
-    procedure connect(destination: JAudioParam; output: Integer = 0); overload;
+    channelCountMode: TChannelCountMode;
+    channelInterpretation: TChannelInterpretation;
+    function connect(destination: JAudioNode): JAudioNode; overload;
+    function connect(destination: JAudioNode; output: Integer): JAudioNode; overload;
+    function connect(destination: JAudioNode; output: Integer; input: Integer): JAudioNode; overload;
+    procedure connect(destination: JAudioParam); overload;
+    procedure connect(destination: JAudioParam; output: Integer); overload;
     procedure disconnect; overload;
     procedure disconnect(output: Integer); overload;
     procedure disconnect(destination: JAudioNode); overload;
@@ -244,8 +249,8 @@ type
 
   JPannerNode = class external 'PannerNode' (JAudioNode)
   public
-    panningModel: JPanningModelType;
-    distanceModel: JDistanceModelType;
+    panningModel: TPanningModelType;
+    distanceModel: TDistanceModelType;
     refDistance: Float;
     maxDistance: Float;
     rolloffFactor: Float;
@@ -265,14 +270,14 @@ type
 
   JSpatialPannerNode = class external 'SpatialPannerNode' (JAudioNode)
   public
-    panningModel: JPanningModelType;
+    panningModel: TPanningModelType;
     positionX: JAudioParam;
     positionY: JAudioParam;
     positionZ: JAudioParam;
     orientationX: JAudioParam;
     orientationY: JAudioParam;
     orientationZ: JAudioParam;
-    distanceModel: JDistanceModelType;
+    distanceModel: TDistanceModelType;
     refDistance: Float;
     maxDistance: Float;
     rolloffFactor: Float;
@@ -332,8 +337,8 @@ type
     release: JAudioParam;
   end;
 
-  JBiquadFilterType = String;
-  JBiquadFilterTypeHelper = strict helper for JBiquadFilterType
+  TBiquadFilterType = String;
+  TBiquadFilterTypeHelper = strict helper for TBiquadFilterType
     const Lowpass = 'lowpass';
     const Highpass = 'highpass';
     const Bandpass = 'bandpass';
@@ -346,7 +351,7 @@ type
 
   JBiquadFilterNode = class external 'BiquadFilterNode' (JAudioNode)
   public
-    &type: JBiquadFilterType;
+    &type: TBiquadFilterType;
     frequency: JAudioParam;
     detune: JAudioParam;
     Q: JAudioParam;
@@ -362,7 +367,7 @@ type
   JWaveShaperNode = class external 'WaveShaperNode' (JAudioNode)
   public
     curve: JFloat32Array;
-    oversample: JOverSampleType;
+    oversample: TOverSampleType;
   end;
 
   JPeriodicWave = class external 'PeriodicWave'
@@ -375,7 +380,7 @@ type
 
   JOscillatorNode = class external 'OscillatorNode' (JAudioNode)
   public
-    &type: JOscillatorType;
+    &type: TOscillatorType;
     frequency: JAudioParam;
     detune: JAudioParam;
     onended: TEventHandler;
@@ -441,3 +446,4 @@ type
     procedure resume;
     procedure suspend(suspendTime: Float);
   end;
+

@@ -55,12 +55,16 @@ type
     originTime: TDOMHighResTimeStamp;
   end;
 
-  // Constructor( optional DocumentTimelineOptions options)
   JDocumentTimeline = class external 'DocumentTimeline' (JAnimationTimeline)
+  public
+    constructor Create; overload;
+    constructor Create(options: JDocumentTimelineOptions); overload;
   end;
 
-  // Constructor( object ? keyframes)
   JSharedKeyframeList = class external 'SharedKeyframeList'
+  public
+    constructor Create; overload;
+    constructor Create(keyframes: Variant); overload;
   end;
 
   JAnimationEffectTimingReadOnly = class external 'AnimationEffectTimingReadOnly'
@@ -106,7 +110,6 @@ type
     function getComputedTiming: JComputedTimingProperties;
   end;
 
-  // Constructor( optional AnimationEffectReadOnly ? effect = null , optional AnimationTimeline ? timeline)
   JAnimation = class external 'Animation' (JEventTarget)
   public
     id: String;
@@ -125,6 +128,11 @@ type
     procedure play;
     procedure pause;
     procedure reverse;
+
+    constructor Create; overload;
+    constructor Create(effect: JAnimationEffectReadOnly); overload;
+    constructor Create(effect: JAnimationEffectReadOnly; timeline: JAnimationTimeline); overload;
+    constructor Create(timeline: JAnimationTimeline); overload;
   end;
 
   JAnimationEffectTiming = class external 'AnimationEffectTiming' (JAnimationEffectTimingReadOnly)
@@ -153,7 +161,6 @@ type
     id: String;
   end;
 
-  // NoInterfaceObject
   JAnimatable = class external 'Animatable'
   public
     function animate(keyframes: Variant): JAnimation; overload;
@@ -162,17 +169,21 @@ type
     function getAnimations: array of JAnimation;
   end;
 
-  // Constructor( Animatable ? target , object ? keyframes , optional( unrestricted double or KeyframeEffectOptions)options),Constructor( KeyframeEffectReadOnly source)
   JKeyframeEffectReadOnly = class external 'KeyframeEffectReadOnly' (JAnimationEffectReadOnly)
   public
     target: JAnimatable;
     iterationComposite: JIterationCompositeOperation;
     composite: JCompositeOperation;
     spacing: String;
+    constructor Create; overload;
+    constructor Create(target: JAnimatable); overload;
+    constructor Create(target: JAnimatable; keyframes: Variant); overload;
+    constructor Create(target: JAnimatable; keyframes: Variant; options: Float); overload;
+    constructor Create(target: JAnimatable; keyframes: Variant; options: JKeyframeEffectOptions); overload;
+    constructor Create(source: JKeyframeEffectReadOnly); overload;
     function getKeyframes: array of Variant;
   end;
 
-  // Constructor( Animatable ? target , object ? keyframes , optional( unrestricted double or KeyframeEffectOptions)options),Constructor( KeyframeEffectReadOnly source)
   JKeyframeEffect = class external 'KeyframeEffect' (JKeyframeEffectReadOnly)
   public
     target: JAnimatable;
@@ -180,6 +191,12 @@ type
     composite: JCompositeOperation;
     spacing: String;
     procedure setKeyframes(keyframes: Variant);
+    constructor Create; overload;
+    constructor Create(target: JAnimatable); overload;
+    constructor Create(target: JAnimatable; keyframes: Variant); overload;
+    constructor Create(target: JAnimatable; keyframes: Variant; options: Float); overload;
+    constructor Create(target: JAnimatable; keyframes: Variant; options: JKeyframeEffectOptions); overload;
+    constructor Create(source: JKeyframeEffectReadOnly); overload;
   end;
 
   JBaseComputedKeyframe = class external 'BaseComputedKeyframe'
@@ -209,16 +226,16 @@ type
     function getAnimations: array of JAnimation;
   end;
 
-  // Constructor( DOMString type , optional AnimationPlaybackEventInit eventInitDict)
-  JAnimationPlaybackEvent = class external 'AnimationPlaybackEvent' (JEvent)
+  JAnimationPlaybackEventInit = class external 'AnimationPlaybackEventInit' (JEventInit)
   public
     currentTime: Float;
     timelineTime: Float;
   end;
 
-  JAnimationPlaybackEventInit = class external 'AnimationPlaybackEventInit' (JEventInit)
+  JAnimationPlaybackEvent = class external 'AnimationPlaybackEvent' (JEvent)
   public
     currentTime: Float;
     timelineTime: Float;
+    constructor Create(&type: String; eventInitDict: JAnimationPlaybackEventInit);
   end;
 
