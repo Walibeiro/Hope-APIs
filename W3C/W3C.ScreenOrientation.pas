@@ -3,7 +3,7 @@ unit W3C.ScreenOrientation;
 interface
 
 uses
-  ECMA.Promise, W3C.DOM4;
+  ECMA.Promise, W3C.DOM4, W3C.CSSOMView;
 
 type
   JOrientationType = String;

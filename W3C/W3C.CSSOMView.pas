@@ -24,7 +24,7 @@ type
     top: Float;
   end;
 
-  JScreen = class external 'Screen'
+  JScreen = partial class external 'Screen'
   public
     availWidth: Integer;
     availHeight: Integer;

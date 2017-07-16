@@ -62,7 +62,9 @@ type
   JFileList = class external 'FileList'
   public
     length: Integer;
-    function item(&index: Integer): JFile;
+    function item(&index: Integer): JFile; external array;
+
+    property Items[&index: Integer]: JFile read item; default;
   end;
 
   // Exposed = (Window, Worker)

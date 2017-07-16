@@ -3,7 +3,7 @@ unit W3C.Geolocation;
 interface
 
 uses
-  W3C.DOM4, W3C.HighResolutionTime;
+  W3C.DOM4, W3C.HTML5, W3C.HighResolutionTime;
 
 type
 	// NoInterfaceObject
@@ -39,7 +39,7 @@ type
 	TPositionCallback = procedure(position: JPosition);
 	TPositionErrorCallback = procedure(positionError: JPositionError);
 
-	JPositionOptions = class external 'PositionOptions'
+	JPositionOptions = class external
 	public
 		enableHighAccuracy: Boolean;
 		timeout: Integer; { Clamp }

@@ -3,7 +3,7 @@ unit W3C.WebStorage;
 interface
 
 uses
-  W3C.DOM4;
+  W3C.DOM4, W3C.HTML5;
 
 type
   JStorage = class external 'Storage'
@@ -46,6 +46,12 @@ type
     storageArea: JStorage;
     constructor Create(&type: String); overload;
     constructor Create(&type: String; eventInitDict: JStorageEventInit); overload;
+  end;
+
+  JWindow = partial class external 'Window' (JEventTarget)
+    windowStorage: JStorage;
+    localStorage: JStorage;
+    sessionStorage: JStorage;
   end;
 
 var

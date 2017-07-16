@@ -167,6 +167,8 @@ type
     procedure start(when, offset: Float); overload;
     procedure start(when, offset, duration: Float); overload;
     procedure stop(when: Float = 0);
+    procedure noteOn(when: Float); deprecated;
+    procedure noteOff(when: Float); deprecated;
   end;
 
   JMediaElementAudioSourceNode = class external 'MediaElementAudioSourceNode' (JAudioNode)
