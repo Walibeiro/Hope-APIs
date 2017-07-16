@@ -20,7 +20,7 @@ type
 		byteLength: Integer;
 	end;
 
-	JInt8Array = class external 'Int8Array'
+	JInt8Array = class external 'Int8Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 1;
 	public
@@ -40,9 +40,12 @@ type
 		function subarray(start: Integer; &end: Integer): JInt8Array;
 	end;
 
-	JUint8Array = class external 'Uint8Array'
+	JUint8Array = class external 'Uint8Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 1;
+  private
+		function GetItem(index: Integer): Integer; external array;
+		procedure SetItem(index: Integer; value: Integer); external array;
 	public
 		length: Integer;
 	  constructor Create(ByteLength: Integer); overload;
@@ -58,11 +61,16 @@ type
 		procedure set(&array: array of Integer); overload;
 		procedure set(&array: array of Integer; offset: Integer); overload;
 		function subarray(start: Integer; &end: Integer): JUint8Array;
+
+	  property Items[index: Integer]: Integer read GetItem write SetItem; default;
 	end;
 
-	JUint8ClampedArray = class external 'Uint8ClampedArray'
+	JUint8ClampedArray = class external 'Uint8ClampedArray' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 1;
+  private
+		function GetItem(index: Integer): Integer; external array;
+		procedure SetItem(index: Integer; value: Integer); external array;
 	public
 		length: Integer;
 	  constructor Create(ByteLength: Integer); overload;
@@ -78,9 +86,11 @@ type
 		procedure set(&array: array of Integer); overload;
 		procedure set(&array: array of Integer; offset: Integer); overload;
 		function subarray(start: Integer; &end: Integer): JUint8ClampedArray;
+
+	  property Items[index: Integer]: Integer read GetItem write SetItem; default;
 	end;
 
-	JInt16Array = class external 'Int16Array'
+	JInt16Array = class external 'Int16Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 2;
 	public
@@ -100,7 +110,7 @@ type
 		function subarray(start: Integer; &end: Integer): JInt16Array;
 	end;
 
-	JUint16Array = class external 'Uint16Array'
+	JUint16Array = class external 'Uint16Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 2;
 	public
@@ -120,7 +130,7 @@ type
 		function subarray(start: Integer; &end: Integer): JUint16Array;
 	end;
 
-	JInt32Array = class external 'Int32Array'
+	JInt32Array = class external 'Int32Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 4;
 	public
@@ -140,7 +150,7 @@ type
 		function subarray(start: Integer; &end: Integer): JInt32Array;
 	end;
 
-	JUint32Array = class external 'Uint32Array'
+	JUint32Array = class external 'Uint32Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 4;
 	public
@@ -160,34 +170,42 @@ type
 		function subarray(start: Integer; &end: Integer): JUint32Array;
 	end;
 
-	JFloat32Array = class external 'Float32Array'
+	JFloat32Array = class external 'Float32Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 4;
+  private
+		function GetItem(index: Integer): Float; external array;
+		procedure SetItem(index: Integer; value: Float); external array;
 	public
 		length: Integer;
 	  constructor Create(ByteLength: Integer); overload;
 	  constructor Create(&array: JFloat32Array); overload;
-	  constructor Create(&array: array of Integer); overload;
+	  constructor Create(&array: array of Float); overload;
 	  constructor Create(buffer: JArrayBuffer); overload;
 	  constructor Create(buffer: JArrayBuffer; byteOffset: Integer); overload;
 	  constructor Create(buffer: JArrayBuffer; byteOffset, byteLength: Integer); overload;
-		function get(&index: Integer): Float;
-		procedure set(&index: Integer; value: Float);
+		function get(index: Integer): Float;
+		procedure set(index: Integer; value: Float);
 		procedure set(&array: JFloat32Array); overload;
 		procedure set(&array: JFloat32Array; offset: Integer); overload;
 		procedure set(&array: array of Float); overload;
 		procedure set(&array: array of Float; offset: Integer); overload;
 		function subarray(start: Integer; &end: Integer): JFloat32Array;
-	end;
 
-	JFloat64Array = class external 'Float64Array'
+	  property Items[index: Integer]: Float read GetItem write SetItem; default;
+  end;
+
+	JFloat64Array = class external 'Float64Array' (JArrayBufferView)
 	const 
 		BYTES_PER_ELEMENT: Integer = 8;
+  private
+		function GetItem(index: Integer): Float; external array;
+		procedure SetItem(index: Integer; value: Float); external array;
 	public
 		length: Integer;
 	  constructor Create(ByteLength: Integer); overload;
 	  constructor Create(&array: JFloat64Array); overload;
-	  constructor Create(&array: array of Integer); overload;
+	  constructor Create(&array: array of Float); overload;
 	  constructor Create(buffer: JArrayBuffer); overload;
 	  constructor Create(buffer: JArrayBuffer; byteOffset: Integer); overload;
 	  constructor Create(buffer: JArrayBuffer; byteOffset, byteLength: Integer); overload;
@@ -198,10 +216,11 @@ type
 		procedure set(&array: array of Float); overload;
 		procedure set(&array: array of Float; offset: Integer); overload;
 		function subarray(start: Integer; &end: Integer): JFloat64Array;
+
+	  property Items[index: Integer]: Float read GetItem write SetItem; default;
 	end;
 
-	// Constructor( ArrayBuffer buffer , optional unsigned long byteOffset , optional unsigned long byteLength)
-	JDataView = class external 'DataView'
+	JDataView = class external 'DataView' (JArrayBufferView)
 	public
 	  constructor Create(buffer: JArrayBuffer); overload;
 	  constructor Create(buffer: JArrayBuffer; byteOffset: Integer); overload;

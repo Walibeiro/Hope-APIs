@@ -5,10 +5,11 @@ interface
 type
   TForEachCallback = procedure(Key, Value: Variant);
   
-  JMap = class external 'map'
+  JMap = class external 'Map'
   public
     size: Integer; 
-    constructor Create(iterable: Variant);
+    constructor Create; overload;
+    constructor Create(iterable: Variant); overload;
     procedure clear;
     function delete(key: Variant): Boolean;
     function entries: Variant;
