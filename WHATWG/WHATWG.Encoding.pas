@@ -17,12 +17,16 @@ type
 		stream: Boolean;
 	end;
 
-	// Constructor( optional DOMString label = utf-8 , optional TextDecoderOptions options),Exposed=( Window , Worker)
+	// Exposed = (Window, Worker)
 	JTextDecoder = class external 'TextDecoder'
 	public
 		encoding: String;
 		fatal: Boolean;
 		ignoreBOM: Boolean;
+    constructor Create; overload;
+    constructor Create(Options: JTextDecoderOptions); overload;
+    constructor Create(Label: String); overload;
+    constructor Create(Label: String; Options: JTextDecoderOptions); overload;
 		function decode: String; overload;
 		function decode(input: JArrayBuffer): String; overload;
 		function decode(input: JArrayBufferView): String; overload;
@@ -30,10 +34,11 @@ type
 		function decode(input: JArrayBufferView; options: JTextDecodeOptions): String; overload;
 	end;
 
-	// Constructor,Exposed=( Window , Worker)
+	// Exposed = (Window, Worker)
 	JTextEncoder = class external 'TextEncoder'
 	public
 		encoding: String;
+    constructor Create;
 		function encode(input: String): JUint8Array; { NewObject }
 	end;
 

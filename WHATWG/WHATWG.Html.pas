@@ -588,13 +588,12 @@ type
   end;
 
   JEventHandlerNonNull = function(event: JEvent): Variant;
-
   TEventHandler = JEventHandlerNonNull;
+
   JOnErrorEventHandlerNonNull = function(event: Variant; source: String; lineno, colno: Integer; error: Variant): Variant; // TODO
-
   TOnErrorEventHandler = JOnErrorEventHandlerNonNull;
-  JOnBeforeUnloadEventHandlerNonNull = function(event: JEvent): String;
 
+  JOnBeforeUnloadEventHandlerNonNull = function(event: JEvent): String;
   TOnBeforeUnloadEventHandler = JOnBeforeUnloadEventHandlerNonNull;
 
   JAudioTrack = class external 'AudioTrack'
