@@ -142,14 +142,6 @@ type
     offsetY: Float;
   end;
 
-  JMouseEventInit = class external 'MouseEventInit'
-  public
-    screenX: Float;
-    screenY: Float;
-    clientX: Float;
-    clientY: Float;
-  end;
-
   JCSSBoxType = String;
   JCSSBoxTypeHelper = strict helper for JCSSBoxType
     const Margin = 'margin';
