@@ -128,6 +128,7 @@ type
     pathname: String; { Unforgeable }
     search: String; { Unforgeable }
     hash: String; { Unforgeable }
+    href: String;
     ancestorOrigins: array of String; { Unforgeable,SameObject }
     procedure assign(url: String); { Unforgeable }
     procedure replace(url: String); { Unforgeable }
