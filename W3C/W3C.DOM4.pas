@@ -58,15 +58,39 @@ type
   end;
   TEventListener = procedure(Event: JEvent);
 
+
+  JEventListenerOptions = class external
+  public
+    capture: Boolean;
+  end;
+
+  JAddEventListenerOptions = class external(JEventListenerOptions)
+  public
+    passive: Boolean;
+    once: Boolean;
+  end;
+
   // Exposed = (Window, Worker)
   JEventTarget = partial class external 'EventTarget'
   public
-    procedure addEventListener(&type: String; callback: procedure; capture : Boolean = false); overload;
-    procedure addEventListener(&type: String; callback: TEventListener; capture : Boolean = false); overload;
-    procedure addEventListener(&type: String; callback: JEventListener; capture : Boolean = false); overload;
-    procedure removeEventListener(&type: String; callback: procedure; capture : Boolean = false); overload;
-    procedure removeEventListener(&type: String; callback: TEventListener; capture : Boolean = false); overload;
-    procedure removeEventListener(&type: String; callback: JEventListener; capture : Boolean = false); overload;
+    procedure addEventListener(&type: String; callback: procedure); overload;
+    procedure addEventListener(&type: String; callback: TEventListener); overload;
+    procedure addEventListener(&type: String; callback: JEventListener); overload;
+    procedure addEventListener(&type: String; callback: procedure; capture: Boolean); overload;
+    procedure addEventListener(&type: String; callback: TEventListener; capture: Boolean); overload;
+    procedure addEventListener(&type: String; callback: JEventListener; capture: Boolean); overload;
+    procedure addEventListener(&type: String; callback: procedure; options: JAddEventListenerOptions); overload;
+    procedure addEventListener(&type: String; callback: TEventListener; options: JAddEventListenerOptions); overload;
+    procedure addEventListener(&type: String; callback: JEventListener; options: JAddEventListenerOptions); overload;
+    procedure removeEventListener(&type: String; callback: procedure); overload;
+    procedure removeEventListener(&type: String; callback: TEventListener); overload;
+    procedure removeEventListener(&type: String; callback: JEventListener); overload;
+    procedure removeEventListener(&type: String; callback: procedure; capture: Boolean); overload;
+    procedure removeEventListener(&type: String; callback: TEventListener; capture: Boolean); overload;
+    procedure removeEventListener(&type: String; callback: JEventListener; capture: Boolean); overload;
+    procedure removeEventListener(&type: String; callback: procedure; options: JAddEventListenerOptions); overload;
+    procedure removeEventListener(&type: String; callback: TEventListener; options: JEventListenerOptions); overload;
+    procedure removeEventListener(&type: String; callback: JEventListener; options: JEventListenerOptions); overload;
     function dispatchEvent(event: JEvent): Boolean;
   end;
 
@@ -95,7 +119,7 @@ type
     function GetNamedItem(name: String): Variant; external 'namedItem';
   public
     length: Integer;
-    function item(index: Integer): JElement;
+    function item(index: Integer): JElement; external array;
     function namedItem(name: String): JElement;
 
     property Items[index: Integer]: JElement read item; default;
@@ -112,7 +136,7 @@ type
     procedure forEach(callback: procedure(Node: JNode)); overload;
     procedure forEach(callback: procedure(Node: JNode); thisArg: Variant); overload;
 
-    property Items[Index: Integer]: JNode read item;
+    property Items[Index: Integer]: JNode read item; default;
   end;
 
   // NoInterfaceObject, Exposed = Window
@@ -233,7 +257,17 @@ type
 
   // Exposed = Window
   JDocumentFragment = class external 'DocumentFragment' (JNode)
+  public
+    children: JHTMLCollection; { SameObject }
+    firstElementChild: JElement;
+    lastElementChild: JElement;
+    childElementCount: Integer;
+
     constructor Create;
+
+    function getElementById(elementId: String): JElement;
+    function querySelector(selectors: String): JElement;
+    function querySelectorAll(selectors: String): JNodeList; { NewObject }
   end;
 
   // Exposed = Window
@@ -259,11 +293,14 @@ type
   public
     data: String; { TreatNullAs=EmptyString }
     length: Integer;
+    previousElementSibling: JElement;
+    nextElementSibling: JElement;
     function substringData(offset: Integer; count: Integer): String;
     procedure appendData(data: String);
     procedure insertData(offset: Integer; data: String);
     procedure deleteData(offset: Integer; count: Integer);
     procedure replaceData(offset: Integer; count: Integer; data: String);
+    procedure remove;
   end;
 
   // Exposed = Window
@@ -314,6 +351,13 @@ type
     id: String;
     className: String;
     classList: JDOMTokenList; { SameObject }
+    children: JHTMLCollection; { SameObject }
+    firstElementChild: JElement;
+    lastElementChild: JElement;
+    childElementCount: Integer;
+    previousElementSibling: JElement;
+    nextElementSibling: JElement;
+
     // TODO: attributes: JNamedNodeMap; { SameObject }
     function getAttribute(&name: String): String;
     function getAttributeNS(&namespace: String; localName: String): String;
@@ -326,6 +370,9 @@ type
     function getElementsByTagName(localName: String): JHTMLCollection;
     function getElementsByTagNameNS(&namespace: String; localName: String): JHTMLCollection;
     function getElementsByClassName(classNames: String): JHTMLCollection;
+    function querySelector(selectors: String): JElement;
+    function querySelectorAll(selectors: String): JNodeList; { NewObject }
+    procedure remove;
   end;
 
   // Exposed = Window
@@ -457,16 +504,23 @@ type
     contentType: String;
     doctype: JDocumentType;
     documentElement: JElement;
+    children: JHTMLCollection; { SameObject }
+    firstElementChild: JElement;
+    lastElementChild: JElement;
+    childElementCount: Integer;
     constructor Create;
     function getElementsByTagName(localName: String): JHTMLCollection;
     function getElementsByTagNameNS(&namespace: String; localName: String): JHTMLCollection;
     function getElementsByClassName(classNames: String): JHTMLCollection;
+    function getElementById(elementId: String): JElement;
     function createElement(localName: String): JElement; { NewObject }
     function createElementNS(&namespace: String; qualifiedName: String): JElement; { NewObject }
     function createDocumentFragment: JDocumentFragment; { NewObject }
     function createTextNode(data: String): JText; { NewObject }
     function createComment(data: String): JComment; { NewObject }
     function createProcessingInstruction(target: String; data: String): JProcessingInstruction; { NewObject }
+    function querySelector(selectors: String): JElement;
+    function querySelectorAll(selectors: String): JNodeList; { NewObject }
     function importNode(node: JNode; deep: Boolean = False): JNode; { NewObject }
     function adoptNode(node: JNode): JNode;
     function createEvent(&Interface: String): JEvent; { NewObject }
