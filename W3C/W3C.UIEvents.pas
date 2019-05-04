@@ -3,7 +3,7 @@ unit W3C.UIEvents;
 interface
 
 uses
-  W3C.DOM4;
+  W3C.DOM4, W3C.HighResolutionTime;
 
 type
   JWindow = partial class external 'Window' (JEventTarget);
@@ -50,6 +50,7 @@ type
   end;
 
   JMouseButton = enum (Left, Middle, Right);
+  JMouseWhich = enum (None, Left, Middle, Right);
 
   JMouseEventInit = partial class external 'MouseEventInit' (JEventModifierInit)
   public
@@ -64,9 +65,11 @@ type
   public
     screenX, screenY: Integer;
     clientX, clientY: Integer;
+    layerX, layerY: Integer;
     ctrlKey, shiftKey, altKey, metaKey: Boolean;
     button: JMouseButton;
     buttons: Integer;
+    which: JMouseWhich;
     relatedTarget: JEventTarget;
     constructor Create(&type: String); overload;
     constructor Create(&type: String; eventInitDict: JMouseEventInit); overload;

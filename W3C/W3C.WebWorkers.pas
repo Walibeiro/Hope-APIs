@@ -6,6 +6,12 @@ uses
   W3C.DOM4, W3C.HTML5, W3C.WebMessaging;
 
 type
+  JWorkerType = String;
+  JWorkerTypeHelper = strict helper for JWorkerType
+    const Classic = 'classic';
+    const Module = 'module';
+  end;
+
   // Exposed = Worker
   JWorkerNavigator = partial class external 'WorkerNavigator'
   end;

@@ -99,8 +99,11 @@ type
   TEventHandler = JEventHandlerNonNull;
   TOnErrorEventHandlerNonNull = function(event: JEvent; source: String;
     lineno, column: Integer; error: Variant): Variant;
-
   TOnErrorEventHandler = TOnErrorEventHandlerNonNull;
+  TOnErrorEventHandlerSimpleNonNull = function(event: JEvent; source: String;
+    lineno, column: Integer; error: Variant): Variant;
+  TOnErrorEventHandlerSimple = TOnErrorEventHandlerSimpleNonNull;
+
   TOnBeforeUnloadEventHandlerNonNull = function(event: JEvent): String;
   TOnBeforeUnloadEventHandler = TOnBeforeUnloadEventHandlerNonNull;
 

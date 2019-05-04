@@ -1,4 +1,4 @@
-unit W3C.CSSFontLoading;
+unit W3C.CssFontLoading;
 
 interface
 

@@ -1,4 +1,4 @@
-unit W3C.HTML5;
+unit W3C.Html5;
 
 interface
 
@@ -269,6 +269,7 @@ type
     rel: String;
     rev: String;
     relList: JDOMTokenList; { SameObject,PutForwards=value }
+    href: String;
     hreflang: String;
     &type: String;
     text: String;
@@ -1327,13 +1328,6 @@ type
     returnValue: String;
   end;
 
-  // NoInterfaceObject,
-	// Exposed = (Window, Worker)
-  JNavigatorOnLine = class external 'NavigatorOnLine'
-  public
-    onLine: Boolean;
-  end;
-
   JErrorEventInit = class external 'ErrorEventInit' (JEventInit)
   public
     message: String;
@@ -1509,40 +1503,6 @@ type
     returnValue: Variant;
   end;
 
-  JNavigator = partial class external 'Navigator'
-  end;
-
-  // NoInterfaceObject
-	// Exposed = (Window, Worker)
-  JNavigatorID = class external 'NavigatorID'
-  public
-    appCodeName: String; { Exposed=Window }
-    appName: String;
-    appVersion: String;
-    platform: String;
-    product: String; { Exposed=Window }
-    userAgent: String;
-  end;
-
-  // NoInterfaceObject
-	// Exposed = (Window, Worker)
-  JNavigatorLanguage = class external 'NavigatorLanguage'
-  public
-    language: String;
-    languages: array of String;
-  end;
-
-  // NoInterfaceObject
-  JNavigatorContentUtils = class external 'NavigatorContentUtils'
-  public
-    procedure registerProtocolHandler(scheme, url, title: String);
-    procedure registerContentHandler(mimeType, url, title: String);
-    function isProtocolHandlerRegistered(scheme, url: String): String;
-    function isContentHandlerRegistered(mimeType, url: String): String;
-    procedure unregisterProtocolHandler(scheme, url: String);
-    procedure unregisterContentHandler(mimeType, url: String);
-  end;
-
   JMimeType = partial class external 'MimeType';
 
   JMimeTypeArray = class external 'MimeTypeArray'
@@ -1570,12 +1530,6 @@ type
     enabledPlugin: JPlugin;
   end;
 
-  // NoInterfaceObject
-  JNavigatorCookies = class external 'NavigatorCookies'
-  public
-    cookieEnabled: Boolean;
-  end;
-
   JPluginArray = class external 'PluginArray'
   public
     length: Integer;
@@ -1584,12 +1538,40 @@ type
     function namedItem(name: String): JPlugin;
   end;
 
-  // NoInterfaceObject
-  JNavigatorPlugins = class external 'NavigatorPlugins'
-  public
+  JNavigator = partial class external 'Navigator'
+    { NavigatorOnLine }
+    onLine: Boolean;
+
+    { NavigatorID }
+    appCodeName: String; { Exposed=Window }
+    appName: String;
+    appVersion: String;
+    platform: String;
+    product: String; { Exposed=Window }
+    userAgent: String;
+
+    { JNavigatorLanguage }
+    language: String;
+    languages: array of String;
+
+    { JNavigatorContentUtils }
+    procedure registerProtocolHandler(scheme, url, title: String);
+    procedure registerContentHandler(mimeType, url, title: String);
+    function isProtocolHandlerRegistered(scheme, url: String): String;
+    function isContentHandlerRegistered(mimeType, url: String): String;
+    procedure unregisterProtocolHandler(scheme, url: String);
+    procedure unregisterContentHandler(mimeType, url: String);
+
+    { NavigatorContentUtils }
+    cookieEnabled: Boolean;
+
+    { NavigatorPlugins }
     plugins: JPluginArray; { SameObject }
     mimeTypes: JMimeTypeArray; { SameObject }
     function javaEnabled: Boolean;
+
+    { NavigatorConcurrentHardware }
+    hardwareConcurrency: Integer; { readonly }
   end;
 
   JHTMLAppletElement = class external 'HTMLAppletElement' (JHTMLElement)
@@ -1758,7 +1740,12 @@ type
     procedure stop;
     procedure focus;
     procedure blur;
-    function open(url: String = 'about:blank'; target: String = '_blank'; features: String = ''; replace: Boolean = False): JWindowProxy;
+    function open: JWindowProxy; overload;
+    function open(url: String): JWindowProxy; overload;
+    function open(url: String; target: String): JWindowProxy; overload;
+    function open(url: String; target: String; features: String): JWindowProxy; overload;
+    function open(url: String; target: String; features: String;
+      replace: Boolean): JWindowProxy; overload;
     procedure alert; overload;
     procedure alert(message: String); overload;
     function confirm: Boolean; overload;
