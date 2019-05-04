@@ -20,7 +20,12 @@ type
 		byteLength: Integer;
 	end;
 
-	JInt8Array = class external 'Int8Array' (JArrayBufferView)
+  JTypedArray = class external 'TypedArray' (JArrayBufferView)
+  public
+	  constructor Create(&array: JTypedArray); overload;
+  end;
+
+	JInt8Array = class external 'Int8Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 1;
 	public
@@ -40,7 +45,7 @@ type
 		function subarray(start: Integer; &end: Integer): JInt8Array;
 	end;
 
-	JUint8Array = class external 'Uint8Array' (JArrayBufferView)
+	JUint8Array = class external 'Uint8Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 1;
   private
@@ -65,7 +70,7 @@ type
 	  property Items[index: Integer]: Integer read GetItem write SetItem; default;
 	end;
 
-	JUint8ClampedArray = class external 'Uint8ClampedArray' (JArrayBufferView)
+	JUint8ClampedArray = class external 'Uint8ClampedArray' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 1;
   private
@@ -90,7 +95,7 @@ type
 	  property Items[index: Integer]: Integer read GetItem write SetItem; default;
 	end;
 
-	JInt16Array = class external 'Int16Array' (JArrayBufferView)
+	JInt16Array = class external 'Int16Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 2;
 	public
@@ -110,7 +115,7 @@ type
 		function subarray(start: Integer; &end: Integer): JInt16Array;
 	end;
 
-	JUint16Array = class external 'Uint16Array' (JArrayBufferView)
+	JUint16Array = class external 'Uint16Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 2;
 	public
@@ -130,7 +135,7 @@ type
 		function subarray(start: Integer; &end: Integer): JUint16Array;
 	end;
 
-	JInt32Array = class external 'Int32Array' (JArrayBufferView)
+	JInt32Array = class external 'Int32Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 4;
 	public
@@ -150,7 +155,7 @@ type
 		function subarray(start: Integer; &end: Integer): JInt32Array;
 	end;
 
-	JUint32Array = class external 'Uint32Array' (JArrayBufferView)
+	JUint32Array = class external 'Uint32Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 4;
 	public
@@ -170,7 +175,7 @@ type
 		function subarray(start: Integer; &end: Integer): JUint32Array;
 	end;
 
-	JFloat32Array = class external 'Float32Array' (JArrayBufferView)
+	JFloat32Array = class external 'Float32Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 4;
   private
@@ -195,7 +200,7 @@ type
 	  property Items[index: Integer]: Float read GetItem write SetItem; default;
   end;
 
-	JFloat64Array = class external 'Float64Array' (JArrayBufferView)
+	JFloat64Array = class external 'Float64Array' (JTypedArray)
 	const 
 		BYTES_PER_ELEMENT: Integer = 8;
   private

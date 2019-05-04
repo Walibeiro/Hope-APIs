@@ -5,7 +5,7 @@ interface
 uses
   ECMA.TypedArray;
 
-function atob(Base64: String): String; external 'atob'; overload;
-function atob(Base64: JTypedArray): String; external 'atob'; overload;
-function btoa(BinaryData: String): String; external 'btoa'; overload;
-function btoa(BinaryData: JTypedArray): String; external 'btoa'; overload;
+function atob(Base64: String): String; overload; external 'atob';
+function atob(Base64: JTypedArray): String; overload; external 'atob';
+function btoa(BinaryData: String): String; overload; external 'btoa';
+function btoa(BinaryData: JTypedArray): String; overload; external 'btoa';

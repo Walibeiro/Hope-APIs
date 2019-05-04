@@ -3,6 +3,22 @@ unit ECMA.Date;
 interface
 
 type
+  JLocaleStringDateOptions = class external
+    localeMatcher: String;
+    timeZone: String;
+    hour12: Boolean;
+    formatMatcher: String;
+    weekday: String;
+    era: String;
+    year: String;
+    month: String;
+    day: String;
+    hour: String;
+    minute: String;
+    second: String;
+    timeZoneName: String;
+  end;
+
   JDate = class external 'Date'
     constructor Create; overload;
     constructor Create(ms: Integer); overload;
@@ -57,9 +73,15 @@ type
     function toDateString: String;
     function toISOString: String;
     function toJSON(key: String): String;
-    function toLocaleDateString: String;
-    function toLocaleString: String;
-    function toLocaleTimeString: String;
+    function toLocaleDateString: String; overload;
+    function toLocaleDateString(locales: String): String; overload;
+    function toLocaleDateString(locales: String; options: JLocaleStringDateOptions): String; overload;
+    function toLocaleString: String; overload;
+    function toLocaleString(locales: String): String; overload;
+    function toLocaleString(locales: String; options: JLocaleStringDateOptions): String; overload;
+    function toLocaleTimeString: String; overload;
+    function toLocaleTimeString(locales: String): String; overload;
+    function toLocaleTimeString(locales: String; options: JLocaleStringDateOptions): String; overload;
     function toString: String;
     function toTimeString: String;
     function toUTCString: String;
